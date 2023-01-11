@@ -10,7 +10,12 @@ def getAxis():
 controller_keybinds = {"": "Test"}
 
 # Key bindings for the keyboard using QT bindings
-keyboard_keybinds = {f"{Qt.Key_W}_KeyPress": "Test"}
+keyboard_keybinds = {f"{Qt.Key_Q}_KeyPress": "Test",
+                     f"{Qt.Key_W}_KeyPress": "UP",
+                     f"{Qt.Key_A}_KeyPress": "LEFT",
+                     f"{Qt.Key_S}_KeyPress": "DOWN",
+                     f"{Qt.Key_D}_KeyPress": "RIGHT",
+                     }
 
 # Combined keybinds
 game_keybinds = controller_keybinds | keyboard_keybinds

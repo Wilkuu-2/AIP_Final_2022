@@ -1,5 +1,6 @@
 import pygame
 import input_helpers.controls as controls
+from game.player import Player
 
 
 class Game:
@@ -17,12 +18,18 @@ class Game:
         self.attach_game_events()
 
         self.time = pygame.time.get_ticks()
+        self.player = Player((200,200), self._input, 0)
+
+        self.game_objects = [self.player]
 
     def update(self, dt):
         pass
-        # TODO: Add player
+        for game_object in self.game_objects:
+            game_object.update(dt)
         # TODO: Add enemies
         # TODO: Add level
+        for game_object in self.game_objects:
+            game_object.after_update(dt)
 
     def display(self, dt):
         # TODO: Render display
@@ -30,7 +37,10 @@ class Game:
         g = (self.time/10.0 + 70) % 255
         b = (-self.time/10.0 + 120) % 255
         self.screen.fill((r, g, b))
-
+        
+        for game_object in self.game_objects:
+            game_object.display(self.screen)
+        
         self.frameReady = True
 
     # Lets QT know if a frame is ready to refresh
