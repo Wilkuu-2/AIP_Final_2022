@@ -87,10 +87,8 @@ class InHandler:
     def handle(self, key, ev_type):
         if ev_type == "_KeyPress":
             self.held_keys.append(key)
-            print(self.held_keys)
         elif ev_type == "_KeyRelease":
             self.held_keys.remove(key)
-            print(self.held_keys)
         try:
             self.events[str(key)+ev_type].trigger()
 
