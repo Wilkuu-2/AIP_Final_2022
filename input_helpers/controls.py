@@ -11,10 +11,10 @@ controller_keybinds = {"": "Test"}
 
 # Key bindings for the keyboard using QT bindings
 keyboard_keybinds = {f"{Qt.Key_Q}_KeyPress": "Test",
-                     f"{Qt.Key_W}_KeyPress": "UP",
-                     f"{Qt.Key_A}_KeyPress": "LEFT",
-                     f"{Qt.Key_S}_KeyPress": "DOWN",
-                     f"{Qt.Key_D}_KeyPress": "RIGHT",
+                     f"{Qt.Key_W}_KeyHold": "UP",
+                     f"{Qt.Key_A}_KeyHold": "LEFT",
+                     f"{Qt.Key_S}_KeyHold": "DOWN",
+                     f"{Qt.Key_D}_KeyHold": "RIGHT",
                      }
 
 # Combined keybinds

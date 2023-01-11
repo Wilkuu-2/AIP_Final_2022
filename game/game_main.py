@@ -23,7 +23,7 @@ class Game:
         self.game_objects = [self.player]
 
     def update(self, dt):
-        pass
+        self._input.heldKeyUpdate()
         for game_object in self.game_objects:
             game_object.update(dt)
         # TODO: Add enemies

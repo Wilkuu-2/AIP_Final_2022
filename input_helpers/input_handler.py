@@ -68,6 +68,7 @@ class InHandler:
         self.axisMethod = getAxis
         self.control_scheme = binds
         self.events = {}
+        self.held_keys = []
 
         for key, name in self.control_scheme.items():
             try:
@@ -76,12 +77,23 @@ class InHandler:
             except KeyError:
                 self.events[key] = InputEvent(key, name)
 
+    def heldKeyUpdate(self):
+        for key in self.held_keys:
+            self.handle(key, "_KeyHold")
+
     def getAxis(self):
         return self.axisMethod()
 
     def handle(self, key, ev_type):
+        if ev_type == "_KeyPress":
+            self.held_keys.append(key)
+            print(self.held_keys)
+        elif ev_type == "_KeyRelease":
+            self.held_keys.remove(key)
+            print(self.held_keys)
         try:
             self.events[str(key)+ev_type].trigger()
+
         except KeyError:
 
             if DEBUG:
