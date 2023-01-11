@@ -70,8 +70,10 @@ class Game:
         # ! Template !
         # ih.attach("Input name",self.eventMethod)
 
-        ih.attach("Test", self.test_event)
+        ih.attach("Test", print, "Test1")
+        ih.attach("Test", lambda: print("Test2"))
+        ih.attach("Test", lambda: self.test_event(3))
+        ih.attach("Test", self.test_event, 4) # Events can have arguments 
 
-    def test_event(self):
-        print("Test")
-
+    def test_event(self, num):
+        print(f"Test{num}")

@@ -1,5 +1,18 @@
 DEBUG = False
 
+
+class InputEventMethod:
+    def __init__(self, method, *args):
+        self.__name__ = getattr(method, "__name__")
+        self.method = method
+        self.args = args[0]
+
+    def invoke(self):
+        if len(self.args) > 0:
+            self.method(*self.args)
+        else:
+            self.method()
+
 class InputEvent:
     def __init__(self, key, name):
         self.name = name
@@ -8,11 +21,13 @@ class InputEvent:
 
     def trigger(self):
         for method in self.methods:
-            method()
+            if DEBUG: 
+                print(f"[EV] {self.name}, {self.key}: method {method}({getattr(method,'__name__')}) executing")
+            method.invoke()
 
     def addMethod(self, method):
         if DEBUG:
-            print(f"[EV] {self.name}, {self.key}: method {method} added")
+            print(f"[EV] {self.name}, {self.key}: method {method}({getattr(method,'__name__')}) added")
         self.methods.append(method)
 
 
@@ -26,7 +41,11 @@ class InHandler:
         self.events = {}
 
         for key, name in self.control_scheme.items():
-            self.events[key] = InputEvent(key, name)
+            try:
+                ie = self.find_Event_by_name(name)
+                self.events[key] = ie
+            except KeyError:
+                self.events[key] = InputEvent(key, name)
 
     def getAxis(self):
         return self.axisMethod()
@@ -35,8 +54,9 @@ class InHandler:
         try:
             self.events[str(key)+ev_type].trigger()
         except KeyError:
-            pass
-            # print(f"Unhandled: {key}, {ev_type}")
+            
+            if DEBUG:
+                print(f"Unhandled: {key}, {ev_type}")
 
     def find_Event_by_name(self, name):
         for event in self.events.values():
@@ -44,5 +64,5 @@ class InHandler:
                 return event
         raise KeyError("[EV]: Event {name} not found")
 
-    def attach(self, name, method):
-        self.find_Event_by_name(name).addMethod(method)
+    def attach(self, name, method, *args):
+        self.find_Event_by_name(name).addMethod(InputEventMethod(method, args))
