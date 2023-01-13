@@ -1,16 +1,37 @@
+
+# AI&P Final project [Create M6 2022-2023]
+# game/game_main.py
+#
+# Copyright 2023 Jakub Stachurski
+# Copyright 2023 Natalia Bueno Donadeu
+#
+
+# Imports
 import pygame
-import input_helpers.controls as controls
+from input_helpers import controls
+from input_helpers.input_handler import InHandler
 from game.player import Player
 from UI.riddle_dialogue import RiddleDialogue
 
 
+# Game
+#  The main class for the pygame part of this project
+#
 class Game:
-    def __init__(self, size, inhandler):
+    # Constructor
+    #
+    #   size -> widget size
+    #   inhandler -> the input handler
+    #
+    def __init__(self, size: list, inhandler: InHandler):
+        # Save the InHandler and load controls
         self._input = inhandler
         self._input.set_control_scheme(
             controls.game_keybinds, controls.getAxis)
+
         pygame.init()
 
+        # Create a hidden canvas for pygame
         self.screen_flags = 0 | pygame.HIDDEN
         self.size = size
         self.screen = pygame.display.set_mode(self.size, self.screen_flags)
@@ -18,22 +39,32 @@ class Game:
 
         self.attach_game_events()
 
+        # Start timing
         self.time = pygame.time.get_ticks()
+
+        # Create Player
         self.player = Player((200, 200), self._input, 0)
 
+        # Create the game_objects array
+        # TODO: Move the GameObjects' storage into the level
         self.game_objects = [self.player]
 
+    # update
+    # This is where the game logic lives
+    #
+    #   dt -> time since last frame in seconds
+    #
     def update(self, dt):
-        self._input.heldKeyUpdate()
-        for game_object in self.game_objects:
-            game_object.update(dt)
+        pass
         # TODO: Add enemies
         # TODO: Add level
-        for game_object in self.game_objects:
-            game_object.after_update(dt)
 
+    # display
+    # This is where the game gets drawn
+    #
+    #   dt -> time since last frame in seconds
+    #
     def display(self, dt):
-        # TODO: Render display
         r = (self.time/10.0 + 50) % 255
         g = (self.time/10.0 + 70) % 255
         b = (-self.time/10.0 + 120) % 255
@@ -44,39 +75,56 @@ class Game:
 
         self.frameReady = True
 
-    # Lets QT know if a frame is ready to refresh
+    # frame_consume
+    #   Lets QT know if a frame is ready to refresh
     def frame_consume(self):
         if self.frameReady:
             self.frameReady = False
             return True
         return False
 
-    # This is what is called by QT
+    # loop
+    #   The event loop that is called by QT
+    #
     def loop(self):
+        # Measure time
         current_time = pygame.time.get_ticks()
         dt = current_time - self.time
         self.time = current_time
 
+        # Axis event
         self.axisEvent(self._input.getAxis())
+
+        # Update all the GameObjects
+        for game_object in self.game_objects:
+            game_object.update(dt)
+
+        # Update the game state
         self.update(dt)
+
+        # After-update all the GameObjects
+        for game_object in self.game_objects:
+            game_object.after_update(dt)
+
+        # Call the key events
+        self._input.heldKeyUpdate()
+
+        # Draw on the screen
         self.display(dt)
+
+        # Flip the pygame display
         pygame.display.flip()
 
+    # get_surface
+    #   returns the screen object to QT
+    #
     def get_surface(self):
         return self.screen
 
-    # Game_Events
-    def resizeEvent(self, size: tuple):
-        self.size = size[0], int(size[0] / 16.0 * 9.0)
-        self.screen = pygame.display.set_mode(self.size, self.screen_flags)
-
-    def axisEvent(self, axis: tuple):
-        pass  # TODO: Handle axis(Arrow) input
-
+    # attach_game_event
+    #   Attaches all sorts of events to methods inside of the instance
     def attach_game_events(self):
         ih = self._input
-
-        # TODO: Use the events
 
         # ! Template !
         # ih.attach("Input name",self.eventMethod)
@@ -87,6 +135,21 @@ class Game:
         ih.attach("Test", self.test_event, 4)  # Events can have arguments
         ih.attach("Test", self.test_popup)
         ih.attach("Popup_Finish", self.popup_event)
+
+    # -- Game_Events
+
+    # resizeEvent
+    #   Resizes the screen
+    #
+    #   size -> size of the widget
+    #
+
+    def resizeEvent(self, size: tuple):
+        self.size = size[0], int(size[0] / 16.0 * 9.0)
+        self.screen = pygame.display.set_mode(self.size, self.screen_flags)
+
+    def axisEvent(self, axis: tuple):
+        pass  # TODO: Handle axis(Arrow) input
 
     def test_event(self, num):
         print(f"Test{num}")
