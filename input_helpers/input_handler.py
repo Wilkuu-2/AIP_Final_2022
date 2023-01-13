@@ -121,23 +121,23 @@ class InputEvent:
 # InHandler
 #   The handler for all inputs and events.
 class InHandler:
-    # Constructor 
+    # Constructor
     # TODO: Figure out why everything has to be done in set_control_scheme
     def __init__(self):
         self.events = {}
         self.held_keys = []
-    
+
     # set_control_scheme
     #   A method that initalizes the control scheme
-    # 
-    #   binds -> key/event binds a dict of format {"EVENT_CODE":"EVENT_NAME"} 
+    #
+    #   binds -> key/event binds a dict of format {"EVENT_CODE":"EVENT_NAME"}
     #   getAxis -> temporarily non-functional movement axis getter method
     #   TODO: reevaluate the existance of getAxis
     #
     def set_control_scheme(self, binds: dict, getAxis):
         self.axisMethod = getAxis
         self.control_scheme = binds
-        
+
         # Go over all the binds
         for key, name in self.control_scheme.items():
             try:
@@ -148,8 +148,6 @@ class InHandler:
                 # If the event does not exist yet, create one
                 self.events[key] = InputEvent(name)
 
-        print(self.events)
-    
     # heldKeyUpdate
     #   A method to be called each frame to generate KeyHold events
     #
@@ -164,12 +162,12 @@ class InHandler:
         return self.axisMethod()
 
     # handle_key
-    #   A handler for key events 
-    #   
+    #   A handler for key events
+    #
     #   key -> keycode of the input
-    #   ev_type -> string with the type of key event 
+    #   ev_type -> string with the type of key event
     #           (_KeyPress, _KeyRelease, or _KeyHold)
-    # 
+    #
     def handle_key(self, key, ev_type):
         # Check if he Key has to be held
         if ev_type == "_KeyPress":
@@ -180,7 +178,7 @@ class InHandler:
             except ValueError:
                 pass
 
-        # Handle the input event like normal 
+        # Handle the input event like normal
         self.handle_event(str(key)+ev_type)
 
     # handle_event
@@ -188,18 +186,18 @@ class InHandler:
     #
     #   ev_code -> event code to be handled
     #   args    -> any amount of arguments to be passed to the event
-    # 
+    #
     def handle_event(self, ev_code, *args):
         if DEBUG:
             print(f"Event {ev_code}, handling START")
 
         # ReleaseHeld
-        # Special event code that releases the held keys 
+        # Special event code that releases the held keys
         # Usefull for when the player loses control of the game
         if ev_code == "ReleaseHeld":
             self.held_keys = []
             return
-        
+
         # Try to find a event for the event code
         try:
             self.events[ev_code].trigger(*args)
@@ -211,14 +209,14 @@ class InHandler:
 
         if DEBUG:
             print(f"Event {ev_code}, handling END")
-    
+
     # find_Event_by_name
     #   Finds the event by its name instead of the event code
     #   (AKA searches the dict by value instead of the key)
-    #   Raises a KeyError when not successfull 
+    #   Raises a KeyError when not successfull
     #
-    #   name -> the 
-    # 
+    #   name -> the
+    #
     def find_Event_by_name(self, name):
         for event in self.events.values():
             if event.name == name:
@@ -231,6 +229,6 @@ class InHandler:
     #   name -> "Name of the event"
     #   method -> method to be called
     #   args   -> any amount of constant arguments
-    # 
+    #
     def attach(self, name, method, *args):
         self.find_Event_by_name(name).addMethod(EventMethod(method, args))
