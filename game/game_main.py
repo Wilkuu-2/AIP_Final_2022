@@ -1,6 +1,7 @@
 import pygame
 import input_helpers.controls as controls
 from game.player import Player
+from UI.riddle_dialogue import RiddleDialogue
 
 
 class Game:
@@ -18,7 +19,7 @@ class Game:
         self.attach_game_events()
 
         self.time = pygame.time.get_ticks()
-        self.player = Player((200,200), self._input, 0)
+        self.player = Player((200, 200), self._input, 0)
 
         self.game_objects = [self.player]
 
@@ -37,10 +38,10 @@ class Game:
         g = (self.time/10.0 + 70) % 255
         b = (-self.time/10.0 + 120) % 255
         self.screen.fill((r, g, b))
-        
+
         for game_object in self.game_objects:
             game_object.display(self.screen)
-        
+
         self.frameReady = True
 
     # Lets QT know if a frame is ready to refresh
@@ -83,7 +84,19 @@ class Game:
         ih.attach("Test", print, "Test1")
         ih.attach("Test", lambda: print("Test2"))
         ih.attach("Test", lambda: self.test_event(3))
-        ih.attach("Test", self.test_event, 4) # Events can have arguments 
+        ih.attach("Test", self.test_event, 4)  # Events can have arguments
+        ih.attach("Test", self.test_popup)
+        ih.attach("Popup_Finish", self.popup_event)
 
     def test_event(self, num):
         print(f"Test{num}")
+
+    def test_popup(self):
+        print("Popup")
+        self._input.handle_event("ReleaseHeld")
+        self.dialogue = RiddleDialogue("Riddle!", [
+                                       "Right", "Wrong!", "Worng", "Wrongg"], 0, self._input, bottom_text="Bottom_Text")
+        self.dialogue.run()
+
+    def popup_event(self, is_correct: bool):
+        print("Correct!" if is_correct else "Not Correct :-< !")

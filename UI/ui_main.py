@@ -64,12 +64,12 @@ class PyGameWidget(QWidget):
 
     def keyPressEvent(self, event):
         if not event.isAutoRepeat():
-            self._input.handle(event.key(), "_KeyPress")
+            self._input.handle_key(event.key(), "_KeyPress")
         super().keyPressEvent(event)
 
     def keyReleaseEvent(self, event):
         if not event.isAutoRepeat():
-            self._input.handle(event.key(), "_KeyRelease")
+            self._input.handle_key(event.key(), "_KeyRelease")
         super().keyReleaseEvent(event)
 
     def resizeEvent(self, event):

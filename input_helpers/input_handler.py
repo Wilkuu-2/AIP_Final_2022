@@ -25,10 +25,10 @@ class EventMethod:
                 new_args.append(arg)
 
             if self.desired_arg_len > -1:
-                for arg in self.args[len(args[0]): self.desired_args_len]:
+                for arg in self.args[len(args): self.desired_arg_len]:
                     new_args.append(arg)
             else:
-                for arg in self.args[len(args[0]):]:
+                for arg in self.args[len(args):]:
                     new_args.append(arg)
 
             self.method(*new_args)
@@ -46,17 +46,17 @@ class InputEvent:
         self.key = key
         self.methods = []
 
-    def trigger(self):
+    def trigger(self, *args):
         for method in self.methods:
             if DEBUG:
                 print(
-                    f"[EV] {self.name}, {self.key}: method {method}({getattr(method,'__name__')}) executing")
-            method.invoke()
+                    f"[EV] {self.name}, {self.key}: method ({method.__name__}) executing")
+            method.invoke(*args)
 
     def addMethod(self, method):
         if DEBUG:
             print(
-                f"[EV] {self.name}, {self.key}: method {method}({getattr(method,'__name__')}) added")
+                f"[EV] {self.name}, {self.key}: method ({method.__name__}) added")
         self.methods.append(method)
 
 
@@ -69,6 +69,7 @@ class InHandler:
         self.control_scheme = binds
         self.events = {}
         self.held_keys = []
+        self.popup_closed = False
 
         for key, name in self.control_scheme.items():
             try:
@@ -77,25 +78,40 @@ class InHandler:
             except KeyError:
                 self.events[key] = InputEvent(key, name)
 
+        print(self.events)
+
     def heldKeyUpdate(self):
         for key in self.held_keys:
-            self.handle(key, "_KeyHold")
+            self.handle_key(key, "_KeyHold")
 
     def getAxis(self):
         return self.axisMethod()
 
-    def handle(self, key, ev_type):
+    def handle_key(self, key, ev_type):
         if ev_type == "_KeyPress":
             self.held_keys.append(key)
         elif ev_type == "_KeyRelease":
-            self.held_keys.remove(key)
+            try:
+                self.held_keys.remove(key)
+            except ValueError:
+                pass
+
+        self.handle_event(str(key)+ev_type)
+
+    def handle_event(self, ev_code, *args):
+        if DEBUG:
+            print(f"Event {ev_code}, handling START")
+        if ev_code == "ReleaseHeld":
+            self.held_keys = []
+            return
         try:
-            self.events[str(key)+ev_type].trigger()
+            self.events[ev_code].trigger(*args)
 
         except KeyError:
-
             if DEBUG:
-                print(f"Unhandled: {key}, {ev_type}")
+                print(f"Unhandled: {ev_code}")
+        if DEBUG:
+            print(f"Event {ev_code}, handling END")
 
     def find_Event_by_name(self, name):
         for event in self.events.values():

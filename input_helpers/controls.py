@@ -7,6 +7,8 @@ def getAxis():
 
 # Key bindings for the physical controller using a custom class
 # TODO: Write the controller class
+other_events = {"Popup_Finish": "Popup_Finish"}
+
 controller_keybinds = {"": "Test"}
 
 # Key bindings for the keyboard using QT bindings
@@ -18,4 +20,4 @@ keyboard_keybinds = {f"{Qt.Key_Q}_KeyPress": "Test",
                      }
 
 # Combined keybinds
-game_keybinds = controller_keybinds | keyboard_keybinds
+game_keybinds = controller_keybinds | keyboard_keybinds | other_events
