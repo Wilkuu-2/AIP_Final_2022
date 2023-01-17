@@ -12,6 +12,8 @@ from input_helpers import controls
 from input_helpers.input_handler import InHandler
 from game.player import Player
 from UI.riddle_dialogue import RiddleDialogue
+from game.level.level import Level
+from game.PacmanProject.board import boards
 
 
 # Game
@@ -45,6 +47,10 @@ class Game:
         # Create Player
         self.player = Player((200, 200), self._input, 0)
 
+        # Create Level
+        size = (len(boards[0]),len(boards))
+        self.level = Level(size, boards)
+
         # Create the game_objects array
         # TODO: Move the GameObjects' storage into the level
         self.game_objects = [self.player]
@@ -70,10 +76,14 @@ class Game:
         b = (-self.time/10.0 + 120) % 255
         self.screen.fill((r, g, b))
 
+        self.level.DEBUG_DrawLevel(self.screen, self.size[0], self.size[1])
+        
         for game_object in self.game_objects:
             game_object.display(self.screen)
 
         self.frameReady = True
+
+
 
     # frame_consume
     #   Lets QT know if a frame is ready to refresh
@@ -145,7 +155,7 @@ class Game:
     #
 
     def resizeEvent(self, size: tuple):
-        self.size = size[0], int(size[0] / 16.0 * 9.0)
+        self.size = size[0], int(size[0] / 750.0 * 800.0)
         self.screen = pygame.display.set_mode(self.size, self.screen_flags)
 
     def axisEvent(self, axis: tuple):
