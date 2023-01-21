@@ -55,11 +55,13 @@ class GameObject:
             self.pos = new_tile.position
 
     # _display
-    #   A base class side of the display method
+    #   A base class side of the display method, calls display() at the end.
+    #
+    #   screen -> pygame surface object
+    #   units -> units which symbolise 1 tile of the level
     #
     #   DO NOT OVERRIDE
     #
-
     def _display(self, screen, units):
         screen_pos = self.level.get_screen_position(
             units, self.pos[0], self.pos[1])
@@ -87,6 +89,8 @@ class GameObject:
 
     # _update
     #  The base class side pf the update method
+    #
+    #   dt -> time since last frame in seconds
     #
     #  DO NOT OVERRIDE
     #

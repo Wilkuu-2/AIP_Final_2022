@@ -82,9 +82,9 @@ class Game:
         self.frameReady = True
 
 
-
     # frame_consume
     #   Lets QT know if a frame is ready to refresh
+    #
     def frame_consume(self):
         if self.frameReady:
             self.frameReady = False
@@ -154,6 +154,7 @@ class Game:
     def axisEvent(self, axis: tuple):
         pass  # TODO: Handle axis(Arrow) input
 
+    # TODO: Clean up those tests
     def test_event(self, num):
         print(f"Test{num}")
 
