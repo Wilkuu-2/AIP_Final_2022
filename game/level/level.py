@@ -1,11 +1,10 @@
 from game.level.tile import LevelTile
 import pygame.surface
-
 from game.level.access_flags import ACCESS_FLAGS
 
 
 class Level:
-    def __init__(self, size: tuple, levelarr: list):
+    def __init__(self, size: tuple, levelarr: list, linked: tuple):
         self.size = size
         self.tiles = []
         self.game_objects = []
@@ -24,6 +23,11 @@ class Level:
 
                 self.tiles[x].append(LevelTile((x, y), self, access))
 
+        link1 = self.get_tile(*linked[0])
+        link2 = self.get_tile(*linked[1])
+
+        link1.link(link2)
+
     def DEBUG_DrawLevel(self, sur: pygame.Surface, width, height):
         unit_x, unit_y = self.get_units(width, height)
 
@@ -39,7 +43,7 @@ class Level:
 
     def validate_tile_position(self, x, y):
         if x < 0 or y < 0 or x > self.size[0] or y > self.size[1]:
-            raise KeyError(
+            raise IndexError(
                 f"Invalid tile position: ({x},{y})/({self.size[0]},{self.size[1]})")
 
     def get_screen_position(self, units, x, y):
@@ -55,7 +59,7 @@ class Level:
     def get_GameObjects(self, x, y):
         found = []
         for game_object in self.game_objects:
-            if (round(game_object.pos.x == x)) and (round(game_object.pos.y) == y):
+            if (round(game_object.pos[0] == x)) and (round(game_object.pos[1]) == y):
                 found.append(game_object)
         return found
 
@@ -70,5 +74,4 @@ class Level:
 
     def get_tile(self, x, y) -> LevelTile:
         self.validate_tile_position(x, y)
-
         return self.tiles[round(x)][round(y)]

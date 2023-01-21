@@ -13,7 +13,7 @@ from input_helpers.input_handler import InHandler
 from game.player import Player
 from UI.riddle_dialogue import RiddleDialogue
 from game.level.level import Level
-from game.PacmanProject.board import boards
+from game.PacmanProject.board import boards, linked
 
 
 # Game
@@ -46,7 +46,7 @@ class Game:
 
         # Create Level
         size = (len(boards[0]), len(boards))
-        self.level = Level(size, boards)
+        self.level = Level(size, boards, linked)
 
         # Create Player
         self.player = Player((10, 9), self._input, self.level)

@@ -30,7 +30,7 @@ class GameObject:
     def __init__(self, pos: tuple, size: tuple, level, access_flags):
         self.size = Vector2(size)
         self.level = level
-        self.pos = Vector2(pos)
+        self.pos = pos
         self.access_flags = access_flags
 
         # Give the object an id
@@ -46,14 +46,13 @@ class GameObject:
     #   mv -> The amount of movement to be done ,a tuple vector in form of (x,y)
     #
     def move(self, mv: tuple):
-        move_x = self.pos.x + mv[0]
-        move_y = self.pos.y + mv[1]
-        # Test for collisions
-        col_result = self.collide(move_x, move_y)
-        if not col_result:
+        move_x, move_y = mv
+        # Test for collisions and get the correct tile
+        new_tile = self.collide(move_x, move_y)
+
+        if new_tile is not True:
             # Finalize the move
-            self.pos.x = move_x
-            self.pos.y = move_y
+            self.pos = new_tile.position
 
     # _display
     #   A base class side of the display method
@@ -63,8 +62,8 @@ class GameObject:
 
     def _display(self, screen, units):
         screen_pos = self.level.get_screen_position(
-            units, self.pos.x, self.pos.y)
-        screen_size = (units[0] * self.size.x, units[1] * self.size.y)
+            units, self.pos[0], self.pos[1])
+        screen_size = (units[0] * self.size[0], units[1] * self.size[1])
 
         self.display(screen, screen_pos, screen_size)
 
@@ -107,19 +106,22 @@ class GameObject:
     # collide
     #   Inherent collision logic for game objects
     #
-    #   new_pos -> tuple in form of (x.y)
-    #   level   -> the level the collision occurs on
+    #   new_pos -> relative position of the collision
     #
     def collide(self, x, y):
-        tile = self.level.get_tile(x, y)
-        if not tile.testAccess(self.access_flags):
+        tile = self.get_level_tile()
+        next_tile = tile.try_move(x, y, self.access_flags)
+
+        if next_tile is None:
             return True
 
-        for other in self.level.get_GameObjects(x, y):
+        abs_x, abs_y = next_tile.position
+
+        for other in self.level.get_GameObjects(abs_x, abs_y):
             self.on_collide(other)
             other.on_collide(self)
 
-        return False
+        return next_tile
 
     # on_collide
     #   A method that handles custom logic around collisons
@@ -131,6 +133,12 @@ class GameObject:
 
     def on_collide(self, other):
         pass
+
+    # get_level_tile(self)
+    #   returns the tile the GameObject is on
+    #
+    def get_level_tile(self):
+        return self.level.get_tile(self.pos[0], self.pos[1])
 
 #
 #   Trigger
