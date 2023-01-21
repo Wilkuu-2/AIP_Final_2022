@@ -15,6 +15,8 @@ from input_helpers.input_handler import EventMethod
 #
 # An entity base class for all moving or interactive objects
 #
+
+
 class GameObject:
     __name__ = "Unnamed Game Object"
     _gameobject_id = 0
@@ -25,14 +27,18 @@ class GameObject:
     # size -> Hitbox size in pixels, tuple in form of (x,y)
     # level -> The level this GameObject lives in
     #
-    def __init__(self, pos: tuple, size: tuple, level):
-        self.pos = Vector2(pos)
+    def __init__(self, pos: tuple, size: tuple, level, access_flags):
         self.size = Vector2(size)
         self.level = level
+        self.pos = pos
+        self.access_flags = access_flags
 
         # Give the object an id
         self.id = GameObject._gameobject_id
         GameObject._gameobject_id += 1
+
+        # Register inside of the level
+        level.register_GameObject(self)
 
     # Move
     #   This method moves the GameObject by the vector2 given
@@ -40,39 +46,56 @@ class GameObject:
     #   mv -> The amount of movement to be done ,a tuple vector in form of (x,y)
     #
     def move(self, mv: tuple):
-        move = (self.pos.x + mv[0], self.pos.y + mv[1])
-        # Test for collisions
-        col_result = self.collide(move, self.level)
-        if col_result is None:
+        move_x, move_y = mv
+        # Test for collisions and get the correct tile
+        new_tile = self.collide(move_x, move_y)
+
+        if new_tile is not True:
             # Finalize the move
-            self.pos.x = move[0]
-            self.pos.y = move[1]
-        else:
-            # Try moving closer
-            v_move = Vector2(mv)
-            mag = v_move.magnitude() - 1
+            self.pos = new_tile.position
 
-            # When the magnitude is 0, dont bother moving
-            if mag <= 0:
-                return
+    # _display
+    #   A base class side of the display method, calls display() at the end.
+    #
+    #   screen -> pygame surface object
+    #   units -> units which symbolise 1 tile of the level
+    #
+    #   DO NOT OVERRIDE
+    #
+    def _display(self, screen, units):
+        screen_pos = self.level.get_screen_position(
+            units, self.pos[0], self.pos[1])
+        screen_size = (units[0] * self.size[0], units[1] * self.size[1])
 
-            v_move.normalize_ip()
-            v_move = v_move * mag
-
-            self.move((v_move.x, v_move.y), self.level)
+        self.display(screen, screen_pos, screen_size)
 
     # display
     #   A method that handles drawing of the object
     #
+    #   screen -> pygame screen object
+    #   screen_pos -> position of the object on the screen
+    #   screen_size -> size of the object on the screen
+    #
     #   The correct usage of GameObject involves overriding this method
     #   If that is not done, the following will act as a placeholder
 
-    def display(self, surface):
-        rect = Rect(self.pos.x - self.size.x / 2,
-                    self.pos.y - self.size.y / 2,
-                    self.size.x,
-                    self.size.y)
-        draw.ellipse(surface, (255, 50, 50), rect)
+    def display(self, screen, screen_pos, screen_size):
+        rect = Rect(screen_pos[0],
+                    screen_pos[1],
+                    screen_size[0],
+                    screen_size[1])
+
+        draw.ellipse(screen, (255, 50, 50), rect)
+
+    # _update
+    #  The base class side pf the update method
+    #
+    #   dt -> time since last frame in seconds
+    #
+    #  DO NOT OVERRIDE
+    #
+    def _update(self, dt):
+        self.update(dt)
 
     # update
     #   A method that handles logic of the object
@@ -84,24 +107,25 @@ class GameObject:
     def update(self, dt):
         pass
 
-    # after_update
-    #   A method that handles custom logic of the object
-    #
-    #   dt -> time since last frame in seconds
-    #
-    #   The correct usage of GameObject involves overriding this method
-    #   If that is not done, the following will act as a placeholder
-    def after_update(self, dt):
-        self.collided = False
-
     # collide
     #   Inherent collision logic for game objects
     #
-    #   new_pos -> tuple in form of (x.y)
-    #   level   -> the level the collision occurs on
+    #   new_pos -> relative position of the collision
     #
-    def collide(self, new_pos: tuple, level):
-        pass
+    def collide(self, x, y):
+        tile = self.get_level_tile()
+        next_tile = tile.try_move(x, y, self.access_flags)
+
+        if next_tile is None:
+            return True
+
+        abs_x, abs_y = next_tile.position
+
+        for other in self.level.get_GameObjects(abs_x, abs_y):
+            self.on_collide(other)
+            other.on_collide(self)
+
+        return next_tile
 
     # on_collide
     #   A method that handles custom logic around collisons
@@ -113,6 +137,12 @@ class GameObject:
 
     def on_collide(self, other):
         pass
+
+    # get_level_tile(self)
+    #   returns the tile the GameObject is on
+    #
+    def get_level_tile(self):
+        return self.level.get_tile(self.pos[0], self.pos[1])
 
 #
 #   Trigger

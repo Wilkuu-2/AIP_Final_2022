@@ -13,7 +13,7 @@ from input_helpers.input_handler import InHandler
 from game.player import Player
 from UI.riddle_dialogue import RiddleDialogue
 from game.level.level import Level
-from game.PacmanProject.board import boards
+from game.PacmanProject.board import boards, linked
 
 
 # Game
@@ -44,12 +44,12 @@ class Game:
         # Start timing
         self.time = pygame.time.get_ticks()
 
-        # Create Player
-        self.player = Player((200, 200), self._input, 0)
-
         # Create Level
-        size = (len(boards[0]),len(boards))
-        self.level = Level(size, boards)
+        size = (len(boards[0]), len(boards))
+        self.level = Level(size, boards, linked)
+
+        # Create Player
+        self.player = Player((10, 9), self._input, self.level)
 
         # Create the game_objects array
         # TODO: Move the GameObjects' storage into the level
@@ -77,16 +77,14 @@ class Game:
         self.screen.fill((r, g, b))
 
         self.level.DEBUG_DrawLevel(self.screen, self.size[0], self.size[1])
-        
-        for game_object in self.game_objects:
-            game_object.display(self.screen)
+        self.level.display_GameObjects(self.screen, self.size)
 
         self.frameReady = True
 
 
-
     # frame_consume
     #   Lets QT know if a frame is ready to refresh
+    #
     def frame_consume(self):
         if self.frameReady:
             self.frameReady = False
@@ -106,15 +104,10 @@ class Game:
         self.axisEvent(self._input.getAxis())
 
         # Update all the GameObjects
-        for game_object in self.game_objects:
-            game_object.update(dt)
+        self.level.update_GameObjects(dt)
 
         # Update the game state
         self.update(dt)
-
-        # After-update all the GameObjects
-        for game_object in self.game_objects:
-            game_object.after_update(dt)
 
         # Call the key events
         self._input.heldKeyUpdate()
@@ -161,6 +154,7 @@ class Game:
     def axisEvent(self, axis: tuple):
         pass  # TODO: Handle axis(Arrow) input
 
+    # TODO: Clean up those tests
     def test_event(self, num):
         print(f"Test{num}")
 

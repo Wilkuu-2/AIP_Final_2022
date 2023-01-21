@@ -1,104 +1,155 @@
-
+# AI&P Final project [Create M6 2022-2023]
+# game/level/level.py
+#
+# Copyright 2023 Jakub Stachurski
+# Copyright 2023 Natalia Bueno Donadeu
+#
+# Imports 
+from game.level.tile import LevelTile
 import pygame.surface
-from enum import Enum
+from game.level.access_flags import ACCESS_FLAGS
 
-
-class ACCESS_FLAGS(Enum):
-    ALL = 0b11
-    PLAYER = 0b01
-    AI = 0b10
-    NONE = 0b00
-
-    def __contains__(self, other):
-        if type(other) is type(self):
-            return self.value & other.value > 0
-        else:
-            return self.value & other > 0
-
-
-class LevelTile:
-    def __init__(self, position, level, access: ACCESS_FLAGS):
-        self.position = position
-        self.linked = None
-        self.level = level
-        self.access = access
-        self.storage = {}  # The AI Can store stuff here
-
-    def get_neighbors(self):
-        for neigh in self.get_adjescent():
-            if neigh.is_accessible:
-                yield neigh
-
-        for neigh in self.linked:
-            yield neigh
-
-    def get_adjecent(self):
-        for x, y in [(-1, 0), (0, -1), (1, 0), (0, 1)]:
-            try:
-                yield self.get_relative_tile(x, y)
-            except IndexError:
-                pass
-
-    def get_relative_tile(self, x, y):
-        return self.level.get_tile(self.position[0] + x, self.position[1])
-
-    def link(self, other):
-        self.linked = other
-        other.linked = self
-
-    def move_from(self, x, y):
-        try:
-            return self.get_relative_tile(x, y)
-        except IndexError:
-            if self.linked is not None:
-                return self.linked
-
-        return False
-
-    def DEBUG_DrawTile(self, surface: pygame.Surface, rect: tuple):
-        color = ()
-        match self.access:
-            case ACCESS_FLAGS.ALL:
-                color = (0, 255, 0)
-            case ACCESS_FLAGS.NONE:
-                color = (255, 0, 0)
-            case ACCESS_FLAGS.AI:
-                color = (255, 255, 0)
-            case ACCESS_FLAGS.PLAYER:
-                color = (0, 0, 255)
-            case _:
-                color = (255, 255, 255)
-
-        surface.fill(color, rect)
+# Level
+#   The class which stores the state of the game.
+#   It holds the gameobjects and the tiles that comprise the game's world
+#
 
 
 class Level:
-    def __init__(self, size: tuple, levelarr: list):
+    # Constructor
+    #   size -> the size of the level
+    #   levelarr -> the list that stores the level in integers
+    #   linked -> a tuple of two position on the level, which are to be linked
+    #             TODO: Find a way to get those parsed in the arr
+    #
+    def __init__(self, size: tuple, levelarr: list, linked: tuple):
         self.size = size
         self.tiles = []
-        self.gameobjects = []
+        self.game_objects = []
+
+        # Read through the level array and construct the tiles in the tiles list
         for x in range(0, size[0]):
             self.tiles.append([])
             for y in range(0, size[1]):
                 val = levelarr[y][x]
 
+                # Gives the tile a access flag which will determine if things can enter that tile or not
                 access = ACCESS_FLAGS.NONE
 
-                if val in [0, 1, 2]:
+                if val in [0, 1, 2]:    # 0, 1, 2: Passible tiles with or without the dots
                     access = ACCESS_FLAGS.ALL
-                elif val == 9:
+                elif val == 9:          # 9: Gate of the enemy base
                     access = ACCESS_FLAGS.AI
 
+                # Construct the tile
                 self.tiles[x].append(LevelTile((x, y), self, access))
 
-    def DEBUG_DrawLevel(self, sur: pygame.Surface, width, height):
-        unit_x = width / self.size[0]
-        unit_y = height / self.size[1]
+        # Link the two looping spots together
+        link1 = self.get_tile(*linked[0])
+        link2 = self.get_tile(*linked[1])
+
+        link1.link(link2)
+
+    # DEBUG_DrawLevel
+    #   A Debug way to draw the tiles based on the access flags of the tile
+    #
+    #   surface -> The pygame surface object to draw onto
+    #   width -> the width of the surface
+    #   height -> the height of the surface
+    #
+    def DEBUG_DrawLevel(self, surface: pygame.Surface, width, height):
+        unit_x, unit_y = self.get_units(width, height)
 
         for x in range(0, self.size[0]):
             for y in range(0, self.size[1]):
                 self.get_tile(x, y).DEBUG_DrawTile(
-                    sur, (x * unit_x, y * unit_y, unit_x, unit_y))
+                    surface, (x * unit_x, y * unit_y, unit_x, unit_y))
 
-    def get_tile(self, x, y):
-        return self.tiles[x][y]
+    # get_units
+    #   Calculated how big a single tile is in the X and Y directions
+    #
+    #   width -> the width of the surface that gets drawn onto
+    #   height -> the height of the surface that gets drawn onto
+    #
+    def get_units(self, width, height):
+        unit_x = width // self.size[0]
+        unit_y = height // self.size[1]
+        return unit_x, unit_y
+
+    # validate_tile_position
+    #   Validate of the position matches the size of the level
+    #
+    #   x and y -> the position to be checked
+    #
+    def validate_tile_position(self, x, y):
+        if x < 0 or y < 0 or x > self.size[0] or y > self.size[1]:
+            raise IndexError(
+                f"Invalid tile position: ({x},{y})/({self.size[0]},{self.size[1]})")
+
+    # get_screen_position
+    #   Gets the top left position of the given tile in screen space
+    #
+    #   units   -> units
+    #   x and y -> the position to be converted
+    #
+    def get_screen_position(self, units, x, y):
+        self.validate_tile_position(x, y)
+        return x * units[0], y * units[1]
+
+    # register_GameObject
+    #   Adds a game object onto the game_objects list
+    #
+    #   game_object -> the GameObject to be added
+    #
+    def register_GameObject(self, game_object):
+        # The game_object should be in the array only once
+        if game_object in self.game_objects:
+            raise ValueError("Duplicate registration of a GameObject")
+
+        self.game_objects.append(game_object)
+
+    # deregister_GameObject
+    #   Removes a game object from the game_objects list
+    #
+    #   game_object -> the GameObject to be removed
+    #
+    def deregister_GameObject(self, game_object):
+        self.game_objects.remove(game_object)
+
+    # get_GameObjects
+    #   Returns all GameObjects that occupy the tile
+    #
+    #   x and y -> the tile position to search
+    #
+    def get_GameObjects(self, x, y):
+        found = []
+        for game_object in self.game_objects:
+            if (round(game_object.pos[0] == x)) and (round(game_object.pos[1]) == y):
+                found.append(game_object)
+        return found
+
+    # display_GameObjects
+    #   Calls GameObject._display on all GameObjects
+    #   see: game/game_object.py for more details
+    #
+    def display_GameObjects(self, screen, size):
+        units = self.get_units(size[0], size[1])
+        for game_object in self.game_objects:
+            game_object._display(screen, units)
+
+    # update_GameObjects
+    #   Calls GameObject._update on all GameObjects
+    #   see: game/game_object.py for more details
+    #
+    def update_GameObjects(self, dt):
+        for game_object in self.game_objects:
+            game_object._update(dt)
+
+    # get_tile
+    #   Returns the tile at a given position
+    #
+    #   x and y -> Tile position of the wanted tile
+    #
+    def get_tile(self, x, y) -> LevelTile:
+        self.validate_tile_position(x, y)
+        return self.tiles[round(x)][round(y)]
