@@ -25,7 +25,7 @@ class RiddleDialogue():
     #  input_handler -> The input handler to send events to
     #
     def __init__(self, main_text: str, answers: list, corr_answer: int, input_handler: InHandler, bottom_text=None):
-
+        self.input_handler = input_handler
         assert len(answers) > 0
 
         # Initalize the QMessageBox
