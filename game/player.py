@@ -9,6 +9,7 @@
 # Imports
 from game.game_object import GameObject
 from input_helpers.input_handler import InHandler
+from game.level.access_flags import ACCESS_FLAGS
 
 
 #
@@ -26,7 +27,7 @@ class Player(GameObject):
     #   input_handler -> InHandler that will handle the movement and other actions
     #
     def __init__(self, pos: tuple, input_handler: InHandler, level):
-        super().__init__(pos, [10, 10], level)
+        super().__init__(pos, [1, 1], level, ACCESS_FLAGS.PLAYER)
 
         input_handler.attach("UP",   self.move, (0, -1))
         input_handler.attach("DOWN", self.move, (0, 1))

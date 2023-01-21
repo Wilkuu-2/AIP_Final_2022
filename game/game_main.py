@@ -44,12 +44,12 @@ class Game:
         # Start timing
         self.time = pygame.time.get_ticks()
 
-        # Create Player
-        self.player = Player((200, 200), self._input, 0)
-
         # Create Level
-        size = (len(boards[0]),len(boards))
+        size = (len(boards[0]), len(boards))
         self.level = Level(size, boards)
+
+        # Create Player
+        self.player = Player((10, 9), self._input, self.level)
 
         # Create the game_objects array
         # TODO: Move the GameObjects' storage into the level
@@ -77,9 +77,7 @@ class Game:
         self.screen.fill((r, g, b))
 
         self.level.DEBUG_DrawLevel(self.screen, self.size[0], self.size[1])
-        
-        for game_object in self.game_objects:
-            game_object.display(self.screen)
+        self.level.display_GameObjects(self.screen, self.size)
 
         self.frameReady = True
 
@@ -106,15 +104,10 @@ class Game:
         self.axisEvent(self._input.getAxis())
 
         # Update all the GameObjects
-        for game_object in self.game_objects:
-            game_object.update(dt)
+        self.level.update_GameObjects(dt)
 
         # Update the game state
         self.update(dt)
-
-        # After-update all the GameObjects
-        for game_object in self.game_objects:
-            game_object.after_update(dt)
 
         # Call the key events
         self._input.heldKeyUpdate()
