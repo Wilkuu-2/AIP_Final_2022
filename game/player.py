@@ -11,7 +11,6 @@ from .game_object import GameObject
 from input_helpers.input_handler import InHandler
 from .level.access_flags import ACCESS_FLAGS
 from .level.level import Level
-from typing import Self
 
 
 class Player(GameObject):
@@ -22,7 +21,7 @@ class Player(GameObject):
     """
     __name__ = "Player object"
 
-    def __init__(self: Self, pos: tuple[int, int], input_handler: InHandler, level: Level):
+    def __init__(self, pos: tuple[int, int], input_handler: InHandler, level: Level):
         super().__init__(pos, (1, 1), level, ACCESS_FLAGS.PLAYER)
 
         input_handler.attach("UP",   self.move, (0, -1))

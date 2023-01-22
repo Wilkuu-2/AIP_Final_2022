@@ -7,7 +7,8 @@
 # Imports
 from .access_flags import ACCESS_FLAGS
 from pygame.surface import Surface
-from typing import Self, Any, Union, Literal
+from typing_extensions import Self, Any 
+from typing import Union, Literal
 
 
 class LevelTile:

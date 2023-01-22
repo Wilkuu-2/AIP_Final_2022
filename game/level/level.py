@@ -8,8 +8,8 @@
 from .tile import LevelTile
 from pygame.surface import Surface
 from .access_flags import ACCESS_FLAGS
-from game.game_object import GameObject
-from typing import Self
+from typing_extensions import Self, Any
+
 
 
 class Level:
@@ -25,7 +25,7 @@ class Level:
     def __init__(self: Self, size: tuple[int, int], levelarr: list[list[int]], linked: tuple[tuple, tuple]):
         self.size = size
         self.tiles: list[list[LevelTile]] = []
-        self.game_objects: list[GameObject] = []
+        self.game_objects: list[Any] = []
 
         # Read through the level array and construct the tiles in the tiles list
         for x in range(0, size[0]):
@@ -89,7 +89,7 @@ class Level:
         self.validate_tile_position(x, y)
         return x * units[0], y * units[1]
 
-    def register_GameObject(self: Self, game_object: GameObject):
+    def register_GameObject(self: Self, game_object):
         """
        Adds a game object onto the game_objects list
         """
@@ -99,7 +99,7 @@ class Level:
 
         self.game_objects.append(game_object)
 
-    def deregister_GameObject(self: Self, game_object: GameObject):
+    def deregister_GameObject(self: Self, game_object):
         """Removes a game object from the game_objects list"""
         self.game_objects.remove(game_object)
 

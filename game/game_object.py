@@ -12,7 +12,7 @@ from pygame.surface import Surface
 from input_helpers.input_handler import EventMethod
 from .level.access_flags import ACCESS_FLAGS
 from .level.level import Level, LevelTile
-from typing import Self
+from typing_extensions import Self
 
 
 class GameObject:
