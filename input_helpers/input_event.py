@@ -38,3 +38,6 @@ class InputEvent:
             print(
                 f"[EV] {self.name}: method ({method.__name__}) added")
         self.methods.append(method)
+
+    def __repr__(self):
+        return f"{self.name}:{type(self)}"

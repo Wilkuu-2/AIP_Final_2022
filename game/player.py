@@ -22,9 +22,9 @@ class Player(GameObject):
     __name__ = "Player object"
 
     def __init__(self, pos: tuple[int, int], input_handler: InHandler, level: Level):
-        super().__init__(pos, (1, 1), level, ACCESS_FLAGS.PLAYER)
+        super().__init__(pos, (1, 1), input_handler, level, ACCESS_FLAGS.PLAYER)
 
-        input_handler.attach("UP",   self.move, (0, -1))
-        input_handler.attach("DOWN", self.move, (0, 1))
-        input_handler.attach("LEFT", self.move, (-1, 0))
-        input_handler.attach("RIGHT", self.move, (1, 0))
+        input_handler.attach("UP",   self.timed_move, (0, -1))
+        input_handler.attach("DOWN", self.timed_move, (0, 1))
+        input_handler.attach("LEFT", self.timed_move, (-1, 0))
+        input_handler.attach("RIGHT", self.timed_move, (1, 0))

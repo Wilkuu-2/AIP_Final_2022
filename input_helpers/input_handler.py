@@ -7,9 +7,12 @@
 # TODO: Maybe we should split this file a bit
 
 # Imports
-from typing import Callable
+from typing import Callable, Union
 from .input_event import InputEvent
 from .event_method import EventMethod
+from .timed_event import TimedEvent
+import re
+
 # Debug flag
 DEBUG = False
 
@@ -23,8 +26,9 @@ class InHandler:
 
     # TODO: Figure out why everything has to be done in set_control_scheme
     def __init__(self):
-        self.events: dict[str, InputEvent] = {}
+        self.events: dict[str, Union[InputEvent, TimedEvent]] = {}
         self.held_keys: list[int] = []
+        self.timed_events: list[TimedEvent] = []
 
     # set_control_scheme
     #
@@ -45,12 +49,24 @@ class InHandler:
                 self.events[key] = ie
             except KeyError:
                 # If the event does not exist yet, create one
-                self.events[key] = InputEvent(name)
+
+                # Match for TimedEvent syntax in the key
+                if re.match(r"TF-\d{3}", key):
+                    ev = TimedEvent(name, int(key[3:6]))
+                    self.events[key] = ev
+                    self.timed_events.append(ev)
+
+                else:
+                    self.events[key] = InputEvent(name)
 
     def heldKeyUpdate(self):
-        """A method to be called each frame to generate KeyHold events"""
+        """A method to be called each frame to generate KeyHold events and coordinate timed events"""
         for key in self.held_keys:
             self.handle_key(key, "_KeyHold")
+
+        TimedEvent.increment()
+        for ev in self.timed_events:
+            ev.refresh()
 
     def getAxis(self):
         """Wrapper around the getAxis method passed in the constructor"""

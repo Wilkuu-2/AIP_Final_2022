@@ -9,10 +9,11 @@
 # Imports
 from pygame import draw, Rect
 from pygame.surface import Surface
-from input_helpers.input_handler import EventMethod
+from input_helpers.input_handler import InHandler, EventMethod
 from .level.access_flags import ACCESS_FLAGS
 from .level.level import Level, LevelTile
-from typing_extensions import Self
+from typing_extensions import Self, Literal
+from typing import Union
 
 
 class GameObject:
@@ -26,11 +27,22 @@ class GameObject:
     __name__ = "Unnamed Game Object"
     _gameobject_id = 0
 
-    def __init__(self: Self, pos: tuple[int, int], size: tuple[int, int], level: Level, access_flags: ACCESS_FLAGS):
+    def __init__(self: Self,
+                 pos: tuple[int, int],
+                 size: tuple[int, int],
+                 input_handler: Union[InHandler, Literal[None]],
+                 level: Level, access_flags: ACCESS_FLAGS):
+
         self.size = size
         self.level = level
         self.pos = pos
         self.access_flags = access_flags
+        self.input_handler = input_handler
+        self.queued_movement: Union[tuple[int, int], Literal[None]] = None
+        
+        # Attach to timed move if we have a input_handler 
+        if self.input_handler is not None:
+            self.input_handler.attach("Timed_Move", self.timed_move_execute)
 
         # Give the object an id
         self.id = GameObject._gameobject_id
@@ -39,9 +51,20 @@ class GameObject:
         # Register inside of the level
         level.register_GameObject(self)
 
-    # Move
-    #
-    def move(self: Self, mv: tuple[int, int]):
+    def timed_move(self, mv: tuple):
+        """ Defers the movement to the Timed_Move event instead of moving instantly 
+        """
+        self.queued_movement = mv
+
+    def timed_move_execute(self):
+        """ Event handle for timed_move
+        """
+        print("Executing move")
+        if self.queued_movement is not None:
+            self.move(self.queued_movement)
+            self.queued_movement = None
+
+    def move(self, mv: tuple[int, int]):
         """Moves the GameObject by the vector2 given
 
         mv -> The amount of movement to be done, a tuple vector in form of (x,y)
