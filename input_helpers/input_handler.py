@@ -8,25 +8,25 @@
 
 # Imports
 from inspect import signature
-
+from typing import Callable
 # Debug flag
 DEBUG = False
 
 #
 # Event Method
-# A wrapper around a method that handles constant and non-constant arguments
 
 
 class EventMethod:
+    """ A wrapper around a method that handles constant and non-constant arguments
 
-    # Constructor
-    #   method -> a method that is to be called
-    #   args   -> any amount of constant arguments
-    #   desired_arg_len -> the amount of arguments the method has,
-    #                   if left on -1, the amount will be determined automatically
-    #                   for most cases
-    #
-    def __init__(self, method, *args, desired_arg_len=-1):
+    method -> a method that is to be called
+    args   -> any amount of constant arguments
+    desired_arg_len -> the amount of arguments the method has,
+                    if left on -1, the amount will be determined automatically
+                    for most cases
+    """
+
+    def __init__(self, method: Callable, *args, desired_arg_len: int=-1):
         self.__name__ = "EventMethod: " + getattr(method, "__name__")
         self.method = method
         self.args = args[0]
@@ -42,11 +42,11 @@ class EventMethod:
             self.desired_arg_len = desired_arg_len
 
     # invoke
-    #   Calls the method
     #
     #   args -> any amount of non-constant arguments
     #
     def invoke(self, *args):
+        """Calls the method"""
         local_args = args
         local_args_len = len(args)
 
@@ -80,38 +80,33 @@ class EventMethod:
 
 #
 # Input Event
-#   A object that represents a single event in the application
-#   An event can be triggered by multiple keys and invoke multiple methods
 #
 
 
 class InputEvent:
-    # Constructor
-    #
-    # name -> The event name in the controls.py file
-    #
-    def __init__(self, name):
+    """An object that represents a single event in the application
+    An event can be triggered by multiple keys and invoke multiple methods
+
+    name -> The event name in the controls.py file
+    """
+
+    def __init__(self, name: str):
         self.name = name
         self.methods = []
 
-    # trigger
-    #  Triggers the event by invoking all the attached EventMethods
-    #
-    #  args -> any amount on arguments to be given to the EventMethods
-    #
     def trigger(self, *args):
+        """Triggers the event by invoking all the attached EventMethods"""
         for method in self.methods:
             if DEBUG:
                 print(
                     f"[EV] {self.name}: method ({method.__name__}) executing")
             method.invoke(*args)
 
-    # addMethod
-    #   Attaches a method to the event
-    #
-    #   method -> the method to be attached
-    #
     def addMethod(self, method: EventMethod):
+        """Attaches a method to the event
+
+        method -> the method to be attached
+        """
         if DEBUG:
             print(
                 f"[EV] {self.name}: method ({method.__name__}) added")
@@ -119,22 +114,23 @@ class InputEvent:
 
 
 # InHandler
-#   The handler for all inputs and events.
 class InHandler:
-    # Constructor
+    """The handler for all inputs and events.
+    """
+
     # TODO: Figure out why everything has to be done in set_control_scheme
     def __init__(self):
-        self.events = {}
-        self.held_keys = []
+        self.events: dict[str, InputEvent] = {}
+        self.held_keys: list[int] = []
 
     # set_control_scheme
-    #   A method that initalizes the control scheme
     #
-    #   binds -> key/event binds a dict of format {"EVENT_CODE":"EVENT_NAME"}
-    #   getAxis -> temporarily non-functional movement axis getter method
-    #   TODO: reevaluate the existance of getAxis
-    #
-    def set_control_scheme(self, binds: dict, getAxis):
+    def set_control_scheme(self, binds: dict, getAxis: Callable):
+        """A method that initalizes the control scheme
+        binds -> key/event binds a dict of format {"EVENT_CODE":"EVENT_NAME"}
+        getAxis -> temporarily non-functional movement axis getter method
+        TODO: reevaluate the existance of getAxis
+        """
         self.axisMethod = getAxis
         self.control_scheme = binds
 
@@ -148,27 +144,23 @@ class InHandler:
                 # If the event does not exist yet, create one
                 self.events[key] = InputEvent(name)
 
-    # heldKeyUpdate
-    #   A method to be called each frame to generate KeyHold events
-    #
     def heldKeyUpdate(self):
+        """A method to be called each frame to generate KeyHold events"""
         for key in self.held_keys:
             self.handle_key(key, "_KeyHold")
 
-    # getAxis
-    #   Wrapper around the getAxis method passed in the constructor
-    #
     def getAxis(self):
+        """Wrapper around the getAxis method passed in the constructor"""
         return self.axisMethod()
 
-    # handle_key
-    #   A handler for key events
-    #
-    #   key -> keycode of the input
-    #   ev_type -> string with the type of key event
-    #           (_KeyPress, _KeyRelease, or _KeyHold)
-    #
-    def handle_key(self, key, ev_type):
+    def handle_key(self, key: int, ev_type: str):
+        """A handler for key events
+
+        key -> keycode of the input
+        ev_type -> string with the type of key event
+                   (_KeyPress, _KeyRelease, or _KeyHold)
+        """
+
         # Check if he Key has to be held
         if ev_type == "_KeyPress":
             self.held_keys.append(key)
@@ -182,12 +174,13 @@ class InHandler:
         self.handle_event(str(key)+ev_type)
 
     # handle_event
-    #   A method that handles event_codes and starts events
     #
-    #   ev_code -> event code to be handled
-    #   args    -> any amount of arguments to be passed to the event
-    #
-    def handle_event(self, ev_code, *args):
+    def handle_event(self, ev_code: str, *args):
+        """A method that handles event_codes and starts events
+
+           ev_code -> event code to be handled
+           args    -> any amount of arguments to be passed to the event
+        """
         if DEBUG:
             print(f"Event {ev_code}, handling START")
 
@@ -210,25 +203,21 @@ class InHandler:
         if DEBUG:
             print(f"Event {ev_code}, handling END")
 
-    # find_Event_by_name
-    #   Finds the event by its name instead of the event code
-    #   (AKA searches the dict by value instead of the key)
-    #   Raises a KeyError when not successfull
-    #
-    #   name -> the
-    #
-    def find_Event_by_name(self, name):
+    def find_Event_by_name(self, name: str) -> InputEvent:
+        """Finds the event by its name instead of the event code
+        (AKA searches the dict by value instead of the key)
+        Raises a KeyError when not successful
+        """
         for event in self.events.values():
             if event.name == name:
                 return event
         raise KeyError(f"[EV]: Event {name} not found")
 
-    # attach
-    #   Wrapper for attaching regular python methods to InputEvents
-    #
-    #   name -> "Name of the event"
-    #   method -> method to be called
-    #   args   -> any amount of constant arguments
-    #
-    def attach(self, name, method, *args):
+    def attach(self, name: str, method: Callable, *args):
+        """Wrapper for attaching regular python methods to InputEvents
+
+        name -> Name of the event
+        method -> method to be called
+        args   -> any amount of constant arguments
+        """
         self.find_Event_by_name(name).addMethod(EventMethod(method, args))
