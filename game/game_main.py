@@ -14,18 +14,21 @@ from game.player import Player
 from UI.riddle_dialogue import RiddleDialogue
 from game.level.level import Level
 from game.PacmanProject.board import boards, linked
+from typing import Self
 
 
-# Game
-#  The main class for the pygame part of this project
-#
 class Game:
-    # Constructor
-    #
-    #   size -> widget size
-    #   inhandler -> the input handler
-    #
-    def __init__(self, size: list, inhandler: InHandler):
+    """
+        The main class for the pygame part of this project
+
+        size -> initial widget size
+        inhandler -> the input handler
+    """
+
+    def __init__(self: Self, size: tuple, inhandler: InHandler):
+        """
+         Constructor
+        """
         # Save the InHandler and load controls
         self._input = inhandler
         self._input.set_control_scheme(
@@ -55,46 +58,49 @@ class Game:
         # TODO: Move the GameObjects' storage into the level
         self.game_objects = [self.player]
 
-    # update
-    # This is where the game logic lives
-    #
-    #   dt -> time since last frame in seconds
-    #
-    def update(self, dt):
+    def update(self: Self, dt: float):
+        """
+        This is where the game logic lives
+
+        dt -> time since last frame in seconds
+
+        """
         pass
         # TODO: Add enemies
         # TODO: Add level
 
-    # display
-    # This is where the game gets drawn
-    #
-    #   dt -> time since last frame in seconds
-    #
-    def display(self, dt):
+    def display(self: Self, dt: float):
+        """
+        This is where the game gets drawn
+
+        dt -> time since last frame in seconds
+        """
         r = (self.time/10.0 + 50) % 255
         g = (self.time/10.0 + 70) % 255
         b = (-self.time/10.0 + 120) % 255
-        self.screen.fill((r, g, b))
+        self.screen.fill((round(r), round(g), round(b)))
 
         self.level.DEBUG_DrawLevel(self.screen, self.size[0], self.size[1])
         self.level.display_GameObjects(self.screen, self.size)
 
         self.frameReady = True
 
-
-    # frame_consume
-    #   Lets QT know if a frame is ready to refresh
-    #
-    def frame_consume(self):
+    def frame_consume(self: Self) -> bool:
+        """
+        Lets QT know if a frame is ready to refresh
+        """
+        self.display
         if self.frameReady:
             self.frameReady = False
             return True
         return False
 
     # loop
-    #   The event loop that is called by QT
     #
-    def loop(self):
+    def loop(self: Self):
+        """
+        The event loop that is called by QT
+        """
         # Measure time
         current_time = pygame.time.get_ticks()
         dt = current_time - self.time
@@ -119,44 +125,47 @@ class Game:
         pygame.display.flip()
 
     # get_surface
-    #   returns the screen object to QT
     #
-    def get_surface(self):
+    def get_surface(self: Self) -> pygame.surface.Surface:
+        """
+            Returns pygame screen object
+
+            Used by QT for displaying the game
+        """
         return self.screen
 
     # attach_game_event
-    #   Attaches all sorts of events to methods inside of the instance
-    def attach_game_events(self):
+    def attach_game_events(self: Self):
+        """
+           Attaches all sorts of events to methods inside of this instance of the Game class 
+
+           A helper method for the constructor
+        """
+
         ih = self._input
 
         # ! Template !
         # ih.attach("Input name",self.eventMethod)
 
-        ih.attach("Test", print, "Test1")
-        ih.attach("Test", lambda: print("Test2"))
-        ih.attach("Test", lambda: self.test_event(3))
-        ih.attach("Test", self.test_event, 4)  # Events can have arguments
         ih.attach("Test", self.test_popup)
         ih.attach("Popup_Finish", self.popup_event)
 
     # -- Game_Events
 
     # resizeEvent
-    #   Resizes the screen
-    #
-    #   size -> size of the widget
     #
 
     def resizeEvent(self, size: tuple):
-        self.size = size[0], int(size[0] / 750.0 * 800.0)
+        """
+        Resizes the screen
+
+        size -> size of the widget
+        """
+        self.size = (size[0], int(size[0] / 750.0 * 800.0))
         self.screen = pygame.display.set_mode(self.size, self.screen_flags)
 
     def axisEvent(self, axis: tuple):
         pass  # TODO: Handle axis(Arrow) input
-
-    # TODO: Clean up those tests
-    def test_event(self, num):
-        print(f"Test{num}")
 
     def test_popup(self):
         print("Popup")

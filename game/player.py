@@ -7,27 +7,23 @@
 #
 
 # Imports
-from game.game_object import GameObject
+from .game_object import GameObject
 from input_helpers.input_handler import InHandler
-from game.level.access_flags import ACCESS_FLAGS
+from .level.access_flags import ACCESS_FLAGS
+from .level.level import Level
+from typing import Self
 
 
-#
-# Player
-#
-# The player entity, this is where the player logic lives
-#
 class Player(GameObject):
+    """ The player entity, this is where the player logic lives
+    pos -> see GameObject
+    level -> see GameObject
+    input_handler -> InHandler that will handle the movement and other actions
+    """
     __name__ = "Player object"
 
-    # Constructor
-    # 
-    #   pos -> see GameObject
-    #   level -> see GameObject
-    #   input_handler -> InHandler that will handle the movement and other actions
-    #
-    def __init__(self, pos: tuple, input_handler: InHandler, level):
-        super().__init__(pos, [1, 1], level, ACCESS_FLAGS.PLAYER)
+    def __init__(self: Self, pos: tuple[int, int], input_handler: InHandler, level: Level):
+        super().__init__(pos, (1, 1), level, ACCESS_FLAGS.PLAYER)
 
         input_handler.attach("UP",   self.move, (0, -1))
         input_handler.attach("DOWN", self.move, (0, 1))

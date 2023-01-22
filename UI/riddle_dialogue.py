@@ -11,20 +11,20 @@ from PyQt5.QtWidgets import QMessageBox, QPushButton
 from input_helpers.input_handler import InHandler
 
 
-# Riddle Dialogue
-#   The a wrappper around the QT QMessageBox that can give a player a riddle
-#   The correctness of the multiple choice answer given by the player
-#   is reported in a event
-#
 class RiddleDialogue():
-    # Constructor
-    #
-    #  main_text -> The riddle
-    #  answers    -> Possible answers for the riddle
-    #  corr_answer -> The index of the correct answer in the answers
-    #  input_handler -> The input handler to send events to
-    #
-    def __init__(self, main_text: str, answers: list, corr_answer: int, input_handler: InHandler, bottom_text=None):
+    """This is a wrappper around the QT QMessageBox that can give a player a riddle
+    The correctness of the multiple choice answer given by the player
+    is reported in a event
+    Constructor
+
+    main_text -> The riddle
+    answers    -> Possible answers for the riddle
+    corr_answer -> The index of the correct answer in the answers
+    input_handler -> The input handler to send events to
+    bottom_text   -> Additional text under the riddle
+    """
+
+    def __init__(self, main_text: str, answers: list[str], corr_answer: int, input_handler: InHandler, bottom_text: str = ""):
         self.input_handler = input_handler
         assert len(answers) > 0
 
@@ -33,8 +33,7 @@ class RiddleDialogue():
         self.message_box.setText(main_text)
 
         # Optional text under the riddle
-        if bottom_text is not None:
-            self.message_box.setInformativeText(bottom_text)
+        self.message_box.setInformativeText(bottom_text)
 
         # Buttons held by the class
         self.buttons = []
@@ -61,17 +60,13 @@ class RiddleDialogue():
         # Attach the event of clicking
         self.message_box.buttonClicked.connect(self.handle_click)
 
-    # run
-    #   Run opens the dialogue, since the constructor only opens it
-    #
     def run(self):
+        """Opens the dialogue"""
         print("OPENING RIDDLE")
         self.message_box.exec()
 
-    # handle_click
-    #    A QT signal which handles the click of a answer
-    #
-    def handle_click(self, button):
+    def handle_click(self, button: QPushButton):
+        """ A QT signal which handles the click of a answer"""
         self.input_handler.handle_event("ReleaseHeld")
         self.input_handler.handle_event(
             "Popup_Finish", button == self.corr_ans_button)
