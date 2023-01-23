@@ -14,6 +14,7 @@ from game.player import Player
 from UI.riddle_dialogue import RiddleDialogue
 from game.level.level import Level
 from game.PacmanProject.board import boards, linked
+from .base_enemy import BaseEnemy
 
 
 class Game:
@@ -51,11 +52,8 @@ class Game:
         self.level = Level(size, boards, linked)
 
         # Create Player
-        self.player = Player((10, 9), self._input, self.level)
-
-        # Create the game_objects array
-        # TODO: Move the GameObjects' storage into the level
-        self.game_objects = [self.player]
+        player = Player((10, 9), self._input, self.level)
+        enemy1 = BaseEnemy((10,8), self._input, self.level, player)
 
     def update(self, dt: float):
         """

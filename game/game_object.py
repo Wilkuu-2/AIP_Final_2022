@@ -39,8 +39,8 @@ class GameObject:
         self.access_flags = access_flags
         self.input_handler = input_handler
         self.queued_movement: Union[tuple[int, int], Literal[None]] = None
-        
-        # Attach to timed move if we have a input_handler 
+
+        # Attach to timed move if we have a input_handler
         if self.input_handler is not None:
             self.input_handler.attach("Timed_Move", self.timed_move_execute)
 
@@ -59,7 +59,6 @@ class GameObject:
     def timed_move_execute(self):
         """ Event handle for timed_move
         """
-        print("Executing move")
         if self.queued_movement is not None:
             self.move(self.queued_movement)
             self.queued_movement = None
