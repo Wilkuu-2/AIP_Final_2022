@@ -133,3 +133,9 @@ class Level:
         """Returns the tile at a given position"""
         self.validate_tile_position(x, y)
         return self.tiles[round(x)][round(y)]
+
+    def clear_tile_storage(self):
+        """Clears the storage for the AI"""
+        for row in self.tiles:
+            for element in row:
+                element.storage.clear()
