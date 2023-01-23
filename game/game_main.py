@@ -14,7 +14,7 @@ from game.player import Player
 from UI.riddle_dialogue import RiddleDialogue
 from game.level.level import Level
 from game.PacmanProject.board import boards, linked
-from typing import Self
+from .base_enemy import BaseEnemy
 
 
 class Game:
@@ -25,7 +25,7 @@ class Game:
         inhandler -> the input handler
     """
 
-    def __init__(self: Self, size: tuple, inhandler: InHandler):
+    def __init__(self, size: tuple, inhandler: InHandler):
         """
          Constructor
         """
@@ -51,14 +51,13 @@ class Game:
         size = (len(boards[0]), len(boards))
         self.level = Level(size, boards, linked)
 
+        self._input.attach("Timed_Move", self.level.clear_tile_storage)
+
         # Create Player
-        self.player = Player((10, 9), self._input, self.level)
+        player = Player((10, 9), self._input, self.level)
+        enemy1 = BaseEnemy((10, 8), self._input, self.level, player)
 
-        # Create the game_objects array
-        # TODO: Move the GameObjects' storage into the level
-        self.game_objects = [self.player]
-
-    def update(self: Self, dt: float):
+    def update(self, dt: float):
         """
         This is where the game logic lives
 
@@ -69,7 +68,7 @@ class Game:
         # TODO: Add enemies
         # TODO: Add level
 
-    def display(self: Self, dt: float):
+    def display(self, dt: float):
         """
         This is where the game gets drawn
 
@@ -85,7 +84,7 @@ class Game:
 
         self.frameReady = True
 
-    def frame_consume(self: Self) -> bool:
+    def frame_consume(self) -> bool:
         """
         Lets QT know if a frame is ready to refresh
         """
@@ -97,7 +96,7 @@ class Game:
 
     # loop
     #
-    def loop(self: Self):
+    def loop(self):
         """
         The event loop that is called by QT
         """
@@ -126,7 +125,7 @@ class Game:
 
     # get_surface
     #
-    def get_surface(self: Self) -> pygame.surface.Surface:
+    def get_surface(self) -> pygame.surface.Surface:
         """
             Returns pygame screen object
 
@@ -135,7 +134,7 @@ class Game:
         return self.screen
 
     # attach_game_event
-    def attach_game_events(self: Self):
+    def attach_game_events(self):
         """
            Attaches all sorts of events to methods inside of this instance of the Game class 
 
