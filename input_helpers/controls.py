@@ -8,6 +8,7 @@
 # Imports
 from PyQt5.QtCore import Qt
 
+
 # A fake getAxis method
 def getAxis():
     return 0, 0
@@ -17,10 +18,18 @@ def getAxis():
 
 # Events that have no regular key input
 other_events = {"Popup_Finish": "Popup_Finish",
+                "Popup_Start": "Popup_Start",
                 "TF-015": "Timed_Move"}
 
 # TODO: Write the controller class/driver
-controller_keybinds = {"": "Test"}
+controller_keybinds = {"": "Test",
+                       "HW_UP": "UP",
+                       "HW_LEFT": "LEFT",
+                       "HW_DOWN": "DOWN",
+                       "HW_RIGHT": "RIGHT",
+                       "1001_KeyPress": "CLICK",
+                       "1002_KeyPress": "NONE"}
+
 
 # Key bindings for the keyboard using QT bindings
 keyboard_keybinds = {f"{Qt.Key_Q}_KeyHold": "Test",
