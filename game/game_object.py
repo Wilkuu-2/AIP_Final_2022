@@ -64,10 +64,15 @@ class GameObject:
         self.access_flags = access_flags
         self.input_handler = input_handler
         self.queued_movement: Union[tuple[int, int], Literal[None]] = None
+        self.can_move = True
 
         # Attach to timed move if we have a input_handler
         if self.input_handler is not None:
             self.input_handler.attach("Timed_Move", self.timed_move_execute)
+            self.input_handler.attach(
+                "Popup_Start", lambda: self.setCanMove(False))
+            self.input_handler.attach(
+                "Popup_Finish", lambda x:  self.setCanMove(True))
 
         # Give the object an id
         self.id = GameObject._gameobject_id
@@ -75,6 +80,9 @@ class GameObject:
 
         # Register inside of the level
         level.register_GameObject(self)
+
+    def setCanMove(self, status: bool):
+        self.can_move = status
 
     def timed_move(self, mv: tuple):
         """ Defers the movement to the Timed_Move event instead of moving instantly 
@@ -93,6 +101,9 @@ class GameObject:
 
         mv -> The amount of movement to be done, a tuple vector in form of (x,y)
         """
+        if not self.can_move:
+            return
+
         move_x, move_y = mv
         # Test for collisions and get the correct tile
         new_tile = self.collide(move_x, move_y)

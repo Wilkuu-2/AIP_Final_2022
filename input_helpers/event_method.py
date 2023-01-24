@@ -24,7 +24,11 @@ class EventMethod:
     def __init__(self, method: Callable, *args, desired_arg_len: int=-1):
         self.__name__ = "EventMethod: " + getattr(method, "__name__")
         self.method = method
-        self.args = args[0]
+
+        if len(args) > 0:
+            self.args = args[0]
+        else:
+            self.args = args
 
         # Determine the amount of arguments automatically
         if desired_arg_len == -1:

@@ -9,6 +9,9 @@
 from random import shuffle
 from PyQt5.QtWidgets import QMessageBox, QPushButton
 from input_helpers.input_handler import InHandler
+from input_helpers.event_method import EventMethod
+
+from time import time
 
 
 class RiddleDialogue():
@@ -26,6 +29,9 @@ class RiddleDialogue():
 
     def __init__(self, main_text: str, answers: list[str], corr_answer: int, input_handler: InHandler, bottom_text: str = ""):
         self.input_handler = input_handler
+        self.last_focus = time()
+        self.focus_cooldown = 0.5
+
         assert len(answers) > 0
 
         # Initalize the QMessageBox
@@ -63,12 +69,35 @@ class RiddleDialogue():
     def run(self):
         """Opens the dialogue"""
         print("OPENING RIDDLE")
-        self.message_box.exec()
+        self.input_handler.handle_event("Popup_Start")
+        self.evs = []
+
+        self.evs.append(self.input_handler.attach(
+            "LEFT", self.handle_focus, False))
+        self.evs.append(self.input_handler.attach(
+            "RIGHT", self.handle_focus, True))
+        self.evs.append(self.input_handler.attach("CLICK", self.handle_select))
+
+        self.message_box.show()
 
     def handle_click(self, button: QPushButton):
         """ A QT signal which handles the click of a answer"""
+
         self.input_handler.handle_event("ReleaseHeld")
+
         self.input_handler.handle_event(
             "Popup_Finish", button == self.corr_ans_button)
+
+        for ev in self.evs:
+            self.input_handler.detach(*ev)
+
+    def handle_focus(self, forward: bool):
+        if self.last_focus + self.focus_cooldown < time():
+            self.message_box.focusNextPrevChild(forward)
+            self.last_focus = time()
+
+    def handle_select(self):
+        self.handle_click(self.message_box.focusWidget())
+        self.message_box.windowHandle().hide()
 
     # TODO: Handle the user just killing the popup

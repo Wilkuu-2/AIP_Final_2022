@@ -10,6 +10,7 @@
 import pygame
 from input_helpers import controls
 from input_helpers.input_handler import InHandler
+from input_helpers.event_method import EventMethod
 from game.player import Player
 from UI.riddle_dialogue import RiddleDialogue
 from game.level.level import Level
@@ -152,6 +153,8 @@ class Game:
 
         ih.attach("Test", self.test_popup)
         ih.attach("Popup_Finish", self.popup_event)
+        ih.hardware_event.startShakeEvent(
+            EventMethod(lambda: print("SHAKE")), 10)
 
     # -- Game_Events
 

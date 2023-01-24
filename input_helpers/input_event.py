@@ -39,5 +39,8 @@ class InputEvent:
                 f"[EV] {self.name}: method ({method.__name__}) added")
         self.methods.append(method)
 
+    def removeMethod(self, method: EventMethod):
+        self.methods.remove(method)
+
     def __repr__(self):
         return f"{self.name}:{type(self)}"

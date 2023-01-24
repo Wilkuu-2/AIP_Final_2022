@@ -10,6 +10,7 @@
 from typing import Callable, Union
 from .input_event import InputEvent
 from .event_method import EventMethod
+from .hardware_event import HardwareEvent
 from .timed_event import TimedEvent
 import re
 
@@ -29,6 +30,8 @@ class InHandler:
         self.events: dict[str, Union[InputEvent, TimedEvent]] = {}
         self.held_keys: list[int] = []
         self.timed_events: list[TimedEvent] = []
+        self.hardware_event = HardwareEvent(
+            self, (input("enter ip:\n").strip(), 1420))
 
     # set_control_scheme
     #
@@ -67,6 +70,8 @@ class InHandler:
         TimedEvent.increment()
         for ev in self.timed_events:
             ev.refresh()
+
+        self.hardware_event.handle()
 
     def getAxis(self):
         """Wrapper around the getAxis method passed in the constructor"""
@@ -139,4 +144,9 @@ class InHandler:
         method -> method to be called
         args   -> any amount of constant arguments
         """
-        self.find_Event_by_name(name).addMethod(EventMethod(method, args))
+        e_method = EventMethod(method, args)
+        self.find_Event_by_name(name).addMethod(e_method)
+        return (name, e_method)
+
+    def detach(self, name: str, method: EventMethod):
+        self.find_Event_by_name(name).removeMethod(method)
