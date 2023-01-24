@@ -28,3 +28,5 @@ class Player(GameObject):
         input_handler.attach("DOWN", self.timed_move, (0, 1))
         input_handler.attach("LEFT", self.timed_move, (-1, 0))
         input_handler.attach("RIGHT", self.timed_move, (1, 0))
+
+

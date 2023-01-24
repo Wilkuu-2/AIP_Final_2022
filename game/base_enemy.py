@@ -33,18 +33,16 @@ class BaseEnemy(GameObject):
         """The method to override and implement AI into.
         Use move((x,y)) to move in here
         """
-        pass
+        priority_queue = []         # add the starting node to the priority queue
+        visited = []            # create an empty list of visited nodes
 
-    def get_neighbors(self):
-        """A wrapper that get the neighbors for the AI
-        """
-        return self.get_level_tile().get_neighbors(self.access_flags)
 
-    def manhattan_distance(self):
+    def manhattan_distance(self, tile):
         """Return the manhattan distance between the player and the 
         """
+
         player_x, player_y = self.player.pos
-        ai_x, ai_y = self.pos
+        ai_x, ai_y = tile.position
         return abs(ai_x - player_x) + abs(ai_y - player_y)
 
     def __hash__(self):
@@ -71,3 +69,34 @@ class BaseEnemy(GameObject):
         """Gets data at the current tile, owned by this BaseEnemy instance
         """
         self.get_level_tile().get_data(hash(self), key)
+
+    def insort(self, arr: list, val, key: str):
+        arr.insert(self.bisect(key, arr, val), val)
+
+    def bisect(self, key:str, arr: list, value, low=0, high=None):
+        if high is None:
+            high = len(arr)
+
+        while low < high:
+            middle = (low + high) // 2
+            if self.get_data(arr[middle], key) < self.get_data(value, key):
+                low = middle + 1
+            else:
+                high = middle
+
+        return low
+
+    def travel_back(self, start, target ,key):
+        nodes = [start]
+        while nodes[-1] != target:
+            parent = self.get_data(nodes[-1], key)
+            if parent == nodes[-1]:
+                print("self own")
+                break
+
+            nodes.append(parent)
+
+        return nodes
+
+
+

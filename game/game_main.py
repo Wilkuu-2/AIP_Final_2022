@@ -15,7 +15,9 @@ from game.player import Player
 from UI.riddle_dialogue import RiddleDialogue
 from game.level.level import Level
 from game.PacmanProject.board import boards, linked
-from .base_enemy import BaseEnemy
+from .greedy_enemy import GreedyEnemy
+from .random_enemy import RandomEnemy
+from .astar_enemy import AstarEnemy
 
 
 class Game:
@@ -55,8 +57,10 @@ class Game:
         self._input.attach("Timed_Move", self.level.clear_tile_storage)
 
         # Create Player
-        player = Player((10, 9), self._input, self.level)
-        enemy1 = BaseEnemy((10, 8), self._input, self.level, player)
+        player = Player((2, 2), self._input, self.level)
+        enemy1 = GreedyEnemy((16, 16), self._input, self.level, player)
+        enemy2 = RandomEnemy((17, 16), self._input, self.level, player)
+        enemy3 = AstarEnemy((15, 16), self._input, self.level, player)
 
     def update(self, dt: float):
         """

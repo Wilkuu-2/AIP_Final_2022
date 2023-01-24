@@ -18,8 +18,7 @@ def getAxis():
 
 # Events that have no regular key input
 other_events = {"Popup_Finish": "Popup_Finish",
-                "Popup_Start": "Popup_Start",
-                "TF-015": "Timed_Move"}
+                "TF-030": "Timed_Move"}
 
 # TODO: Write the controller class/driver
 controller_keybinds = {"": "Test",
