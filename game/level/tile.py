@@ -30,7 +30,7 @@ class LevelTile:
     def get_neighbors(self: Self, access: ACCESS_FLAGS):
         """A method for AI to get the neighboring tiles it can access"""
         for neigh in self.get_adjecent():
-            if neigh.test_access(access):
+            if neigh.testAccess(access):
                 yield neigh
 
         if self.linked is not None:
@@ -105,6 +105,8 @@ class LevelTile:
             return new_tile.try_move(new_x, new_y, access)
 
     def set_data(self, ai_hash: hash, key: str, data: any):
+        if ai_hash not in self.storage:
+            self.storage[ai_hash] = {}
         self.storage[ai_hash][key] = data
 
     def get_data(self, ai_hash: hash, key: str):
@@ -130,3 +132,6 @@ class LevelTile:
 
         # Draw call
         surface.fill(color, rect)
+
+    def __repr__(self):
+        return str(self.position)

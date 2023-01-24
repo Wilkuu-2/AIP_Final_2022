@@ -16,6 +16,31 @@ from typing_extensions import Self, Literal
 from typing import Union
 
 
+
+
+"""    def greedy_algorithm(items, max_weight):
+        # sort the items by value
+        items = sorted(items, key=lambda x: x[1], reverse=True)
+        total_value = 0
+        total_weight = 0
+        selected_items = []
+        # iterate through the items
+        for item in items:
+            if total_weight + item[0] <= max_weight:
+                selected_items.append(item)
+                total_weight += item[0]
+                total_value += item[1]
+        return (total_value, total_weight, selected_items)
+
+    class MyObject:
+        def __init__(self, data):
+            self.data = data
+
+        def greedy_algorithm(self):
+            options = [1, 2, 3]
+            choice = random.choice(options)
+            # Use the randomly chosen option in the rest of the algorithm"""
+
 class GameObject:
     """An entity base class for all moving or interactive objects
 
@@ -108,7 +133,7 @@ class GameObject:
                     screen_size[0],
                     screen_size[1])
 
-        draw.ellipse(screen, (255, 50, 50), rect)
+        draw.ellipse(screen, (100, 0, 255), rect)
 
     def _update(self: Self, dt: float):
         """The base class side pf the update method
