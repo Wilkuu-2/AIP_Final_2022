@@ -31,6 +31,7 @@ class RiddleDialogue():
         self.input_handler = input_handler
         self.last_focus = time()
         self.focus_cooldown = 0.5
+        self.ran = False
 
         assert len(answers) > 0
 
@@ -68,7 +69,11 @@ class RiddleDialogue():
 
     def run(self):
         """Opens the dialogue"""
-        print("OPENING RIDDLE")
+        if self.ran is True:
+            return
+
+        self.ran = True
+
         self.input_handler.handle_event("Popup_Start")
         self.evs = []
 

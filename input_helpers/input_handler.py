@@ -136,14 +136,14 @@ class InHandler:
                 return event
         raise KeyError(f"[EV]: Event {name} not found")
 
-    def attach(self, name: str, method: Callable, *args):
+    def attach(self, name: str, method: Callable, *args, oneshot=False):
         """Wrapper for attaching regular python methods to InputEvents
 
         name -> Name of the event
         method -> method to be called
         args   -> any amount of constant arguments
         """
-        e_method = EventMethod(method, args)
+        e_method = EventMethod(method, args, oneshot=oneshot)
         self.find_Event_by_name(name).addMethod(e_method)
         return (name, e_method)
 

@@ -28,6 +28,8 @@ class InputEvent:
                 print(
                     f"[EV] {self.name}: method ({method.__name__}) executing")
             method.invoke(*args)
+            if method.is_oneshot:
+                self.removeMethod(method)
 
     def addMethod(self, method: EventMethod):
         """Attaches a method to the event
@@ -40,7 +42,10 @@ class InputEvent:
         self.methods.append(method)
 
     def removeMethod(self, method: EventMethod):
-        self.methods.remove(method)
+        try: 
+            self.methods.remove(method)
+        except ValueError:
+            raise ValueError(f"Method: {method} not found")
 
     def __repr__(self):
         return f"{self.name}:{type(self)}"

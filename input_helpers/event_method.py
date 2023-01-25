@@ -21,9 +21,10 @@ class EventMethod:
                     for most cases
     """
 
-    def __init__(self, method: Callable, *args, desired_arg_len: int=-1):
+    def __init__(self, method: Callable, *args, desired_arg_len: int=-1, oneshot=False):
         self.__name__ = "EventMethod: " + getattr(method, "__name__")
         self.method = method
+        self.is_oneshot = oneshot
 
         if len(args) > 0:
             self.args = args[0]
