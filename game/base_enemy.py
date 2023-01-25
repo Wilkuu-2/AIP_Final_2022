@@ -1,8 +1,6 @@
 from .game_object import GameObject
 from input_helpers.input_handler import InHandler
-from .level.level import Level
-from .level.tile import LevelTile
-from .level.access_flags import ACCESS_FLAGS
+from level import Level, LevelTile, ACCESS_FLAGS
 from .player import Player
 from typing_extensions import Any
 
@@ -25,20 +23,18 @@ class BaseEnemy(GameObject):
 
         input_handler.attach("Timed_Move", self.AI_step)
 
-    def on_collide(self: GameObject, other: GameObject):
+    def on_collide(self, other: GameObject):
         if other is self.player:
             self.player.handle_enemy(self)
 
     def _AI_step(self):
-        if self.can_move():
+        if self.can_move:
             self.AI_step()
 
     def AI_step(self):
         """The method to override and implemt AI into.
         Use move((x,y)) to move in here
         """
-        priority_queue = []         # add the starting node to the priority queue
-        visited = []            # create an empty list of visited nodes
 
     def manhattan_distance(self, tile):
         """Return the manhattan distance between the player and the

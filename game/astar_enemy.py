@@ -1,7 +1,6 @@
 from .base_enemy import BaseEnemy
 from input_helpers.input_handler import InHandler
-from .level.level import Level
-from .level.tile import LevelTile
+from level import Level, LevelTile
 from .player import Player
 import pygame
 
@@ -15,7 +14,7 @@ class AstarEnemy(BaseEnemy):
         target = self.player.get_level_tile()
 
         priority_queue = [start]
-        visited = []
+        visited: list[LevelTile]= []
 
         self.set_data(start, "distance", 0)
 
@@ -45,7 +44,7 @@ class AstarEnemy(BaseEnemy):
 
         self.move_from_path(target, start, "parent")
     
-    def display(self, screen: pygame.surface.Surface, screen_pos: tuple, screen_size: tuple):
+    def display(self, screen: pygame.surface.Surface, screen_pos: tuple[int,int], screen_size: tuple[int,int]):
         """Override of GameObject.display"""
 
         rect = (screen_pos[0],

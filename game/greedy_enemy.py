@@ -1,6 +1,6 @@
 from .base_enemy import BaseEnemy
 from input_helpers.input_handler import InHandler
-from .level.level import Level
+from level import Level
 from pygame import draw
 from pygame.surface import Surface
 from .player import Player

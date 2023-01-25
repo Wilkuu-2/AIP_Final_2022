@@ -5,7 +5,7 @@
 # Copyright 2023 Natalia Bueno Donadeu
 #
 # Imports
-from .access_flags import ACCESS_FLAGS
+from level import ACCESS_FLAGS
 from pygame.surface import Surface
 from typing_extensions import Self, Any
 from typing import Union, Literal
@@ -21,11 +21,11 @@ class LevelTile:
 
     def __init__(self: Self, position: tuple[int, int], access: ACCESS_FLAGS):
         self.position = position
-        self.linked = None
-        self.level = None
+        self.linked: Union[Self,Literal[None]] = None
+        self.level: Any = None
         self.access = access
         # The AI Can store stuff here
-        self.storage: dict[hash, dict[str, Any]] = {}
+        self.storage: dict[int, dict[str, Any]] = {}
 
     def get_neighbors(self: Self, access: ACCESS_FLAGS):
         """A method for AI to get the neighboring tiles it can access"""
@@ -110,12 +110,12 @@ class LevelTile:
         if new_tile.testAccess(access):
             return new_tile.try_move(new_x, new_y, access)
 
-    def set_data(self, ai_hash: hash, key: str, data: any):
+    def set_data(self, ai_hash: int, key: str, data: Any):
         if ai_hash not in self.storage:
             self.storage[ai_hash] = {}
         self.storage[ai_hash][key] = data
 
-    def get_data(self, ai_hash: hash, key: str):
+    def get_data(self, ai_hash: int, key: str):
         ai_store = self.storage[ai_hash]
         return ai_store[key]
 

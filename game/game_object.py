@@ -10,9 +10,7 @@
 from pygame import draw, Rect
 from pygame.surface import Surface
 from input_helpers.input_handler import InHandler, EventMethod
-from .level.access_flags import ACCESS_FLAGS
-from .level.level import Level
-from .level.tile import LevelTile
+from level import ACCESS_FLAGS, Level, LevelTile
 from typing_extensions import Self, Literal
 from typing import Union
 

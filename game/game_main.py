@@ -9,11 +9,9 @@
 # Imports
 import pygame
 from input_helpers import controls
-from input_helpers.input_handler import InHandler
-from input_helpers.event_method import EventMethod
+from input_helpers import InHandler
 from game.player import Player
-from UI.riddle_dialogue import RiddleDialogue
-from game.level.level import Level
+from level import Level, LevelTile
 from .greedy_enemy import GreedyEnemy
 from .random_enemy import RandomEnemy
 from .astar_enemy import AstarEnemy
@@ -34,7 +32,7 @@ class Game:
         # Save the InHandler and load controls
         self._input = inhandler
         self._input.set_control_scheme(
-            controls.game_keybinds, controls.getAxis)
+            controls.game_keybinds)
 
         pygame.init()
 
@@ -51,25 +49,28 @@ class Game:
 
         # Create Level
         self.level = Level()
-
         self._input.attach("Timed_Move", self.level.clear_tile_storage)
+        # Create Player and other entities
+        self.populate_level()
 
-        # Create Player
-        player = Player((2, 2), self._input, self.level)
-        enemy1 = GreedyEnemy((16, 17), self._input, self.level, player)
-        enemy2 = RandomEnemy((17, 17), self._input, self.level, player)
-        enemy3 = AstarEnemy((15, 17), self._input, self.level, player)
+    def populate_level(self):
+        player = Player((0,0), self._input, self.level)
+        for row in self.level.tiles:
+            for tile in row:
+                tiletype = tile.get_data(hash("MAIN"),"type")
+                pos = tile.position
+                match tiletype:
+                    case 'P':
+                        player.pos = pos
+                    case '1':
+                        GreedyEnemy(pos, self._input, self.level, player)
+                    case '2':
+                        AstarEnemy(pos, self._input, self.level, player)
+                    case '3':
+                        RandomEnemy(pos, self._input, self.level, player)
 
-    def update(self, dt: float):
-        """
-        This is where the game logic lives
 
-        dt -> time since last frame in seconds
 
-        """
-        pass
-        # TODO: Add enemies
-        # TODO: Add level
 
     def display(self, dt: float):
         """
@@ -108,14 +109,8 @@ class Game:
         dt = current_time - self.time
         self.time = current_time
 
-        # Axis event
-        self.axisEvent(self._input.getAxis())
-
         # Update all the GameObjects
         self.level.update_GameObjects(dt)
-
-        # Update the game state
-        self.update(dt)
 
         # Call the key events
         self._input.heldKeyUpdate()
@@ -149,10 +144,7 @@ class Game:
         # ! Template !
         # ih.attach("Input name",self.eventMethod)
 
-        ih.attach("Test", self.test_popup)
         ih.attach("Popup_Finish", self.popup_event)
-        ih.hardware_event.startShakeEvent(
-            EventMethod(lambda: print("SHAKE")), 10)
 
     # -- Game_Events
 
@@ -167,16 +159,6 @@ class Game:
         """
         self.size = (size[0], int(size[0] / 750.0 * 800.0))
         self.screen = pygame.display.set_mode(self.size, self.screen_flags)
-
-    def axisEvent(self, axis: tuple):
-        pass  # TODO: Handle axis(Arrow) input
-
-    def test_popup(self):
-        print("Popup")
-        self._input.handle_event("ReleaseHeld")
-        self.dialogue = RiddleDialogue("Riddle!", [
-                                       "Right", "Wrong!", "Worng", "Wrongg"], 0, self._input, bottom_text="Bottom_Text")
-        self.dialogue.run()
 
     def popup_event(self, is_correct: bool):
         print("Correct!" if is_correct else "Not Correct :-< !")

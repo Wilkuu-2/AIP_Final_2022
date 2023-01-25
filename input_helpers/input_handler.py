@@ -34,13 +34,12 @@ class InHandler:
 
     # set_control_scheme
     #
-    def set_control_scheme(self, binds: dict, getAxis: Callable):
+    def set_control_scheme(self, binds: dict):
         """A method that initalizes the control scheme
         binds -> key/event binds a dict of format {"EVENT_CODE":"EVENT_NAME"}
         getAxis -> temporarily non-functional movement axis getter method
         TODO: reevaluate the existance of getAxis
         """
-        self.axisMethod = getAxis
         self.control_scheme = binds
 
         # Go over all the binds
@@ -71,10 +70,6 @@ class InHandler:
             ev.refresh()
 
         self.hardware_event.handle()
-
-    def getAxis(self):
-        """Wrapper around the getAxis method passed in the constructor"""
-        return self.axisMethod()
 
     def handle_key(self, key: int, ev_type: str):
         """A handler for key events

@@ -1,5 +1,4 @@
-from .tile import LevelTile
-from .access_flags import ACCESS_FLAGS
+from level import ACCESS_FLAGS, LevelTile 
 
 layout = """# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # O # # # #
@@ -12,8 +11,8 @@ layout = """# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # . # # # . # # # # . # # . # # # # . # # # . # # # # # . # # #
 # # . # # # . # # # # . . . . . . . . . . # # . # # . . . . . # #
 # # . . . . . # # # # . # # # G G # # # . # # . . . . - - - . # #
-# # # # # # . # # O . . # - - - - - - # . # # . # # . . . . . # #
-# # # # # # . O # . # . # - - - - - - # . # # . # # # # # . # # #
+# # # # # # . # # O . . # - 1 - - - - # . # # . # # . . . . . # #
+# # # # # # . O # . # . # - 2 3 - - - # . # # . # # # # # . # # #
 # # # # # # . . # . # . # # # # # # # # . . . . . # # # # . # # #
 + - - - - - . . . . # . . . . . . . . . . # # # . # . . . . - - +
 # # # # # # . . . . # # # . . . . . # # # # # # O # . # # # # # #
@@ -25,7 +24,7 @@ layout = """# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # . . & . . . . . . . # # # # . # # # # . . . . . . . . . . . # #
 # . # # # . # # # # . . . . & . G G G G . # # # # # . # # # . # #
 # . # # # . # # # # . # # # # . # # # # . # . . . . . . . # . # #
-# . # # # . # # . . . . # # # . # # # # . # . . # O . # . . . # #
+# . # # # . # # . . . . # # # . # # # # . # P . # O . # . . . # #
 # . . . . . . . . . . . # # # . . . . . . . . . # . . # . # . # #
 # . # # . # # # . . . . # # # . # # # # . # . . . . . . . # O # #
 # . # # . # # # # . # # # # # . # # # # . # # # # # & # # # . # #
@@ -40,7 +39,7 @@ layout = """# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 def parse_map_file():
     linked: list[tuple[int, int],] = []
     tiles: list[list[LevelTile]] = []
-    size: list[int, int] = [-1, -1]
+    size: list[int] = [-1, -1]
     gameobjects = []
     lines = layout.replace(' ', '').splitlines(False)
 
@@ -53,8 +52,6 @@ def parse_map_file():
             access = ACCESS_FLAGS.NONE
 
             match line[x]:
-                case '-':
-                    access = ACCESS_FLAGS.ALL
                 case 'G':
                     access = ACCESS_FLAGS.AI
                 case '#':
@@ -62,16 +59,15 @@ def parse_map_file():
                 case '+':
                     access = ACCESS_FLAGS.ALL
                     linked.append((x, y))
-                case 'O':
-                    access = ACCESS_FLAGS.ALL
                 case '&':
                     access = ACCESS_FLAGS.PLAYER
-                case '.':
-                    access = ACCESS_FLAGS.ALL
-
+                case _: 
+                    access = ACCESS_FLAGS.ALL 
 
             # Construct the tile
             tiles[y].append(LevelTile((x, y), access))
+            # Store the type
+            tiles[y][x].set_data(hash("MAIN"),"type",line[x])
 
     return size, tiles, linked, gameobjects
 

@@ -5,8 +5,9 @@
 # Copyright 2023 Natalia Bueno Donadeu
 #
 # Imports
-from .tile import LevelTile
-from .level_layout import parse_map_file
+from level import LevelTile
+from level.level_layout import parse_map_file
+
 from pygame.surface import Surface
 from typing_extensions import Self
 
@@ -14,14 +15,10 @@ from typing_extensions import Self
 class Level:
     """The class which stores the state of the game.
        It holds the gameobjects and the tiles that comprise the game's world
-
-        size -> the size of the level
-        levelarr -> the list that stores the level in integers
-        linked -> a tuple of two position on the level, which are to be linked
-                  TODO: Find a way to get those parsed in the arr
     """
 
     def __init__(self):
+        # Parse the map in the level_layout.py
         self.size, self.tiles, linked, self.game_objects = parse_map_file()
 
         for tile_line in self.tiles:

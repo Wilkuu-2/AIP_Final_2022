@@ -9,10 +9,8 @@
 # Imports
 from .game_object import GameObject
 from input_helpers.input_handler import InHandler
-from .level.access_flags import ACCESS_FLAGS
-from .level.level import Level
-from UI.riddle_dialogue import RiddleDialogue
-from UI.shake_dialogue import ShakeDialogue
+from level import ACCESS_FLAGS, Level
+from dialogues import RiddleDialogue, ShakeDialogue
 from random import random
 
 
@@ -39,7 +37,7 @@ class Player(GameObject):
             return
 
         self.handling_enemy = True
-        if False and random() < 0.5:
+        if  random() < 0.5:
             r = RiddleDialogue(
                 "Riddle", ["Wrong", "Right", "Wrong"], 1, self.input_handler)
             r.run()

@@ -1,3 +1,4 @@
-import input_helpers
-import UI
-import game
+from input_helpers.input_handler import InHandler
+from input_helpers.input_event import InputEvent
+import input_helpers.controls
+from input_helpers.event_method import EventMethod

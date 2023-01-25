@@ -1,0 +1,2 @@
+from dialogues.shake_dialogue import ShakeDialogue
+from dialogues.riddle_dialogue import RiddleDialogue
