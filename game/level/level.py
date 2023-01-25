@@ -24,7 +24,7 @@ class Level:
     def __init__(self):
         self.size, self.tiles, linked, self.game_objects = parse_map_file()
 
-        print(self.size)
+        print("size", self.size)
         for tile_line in self.tiles:
             for tile in tile_line:
                 tile.level = self
@@ -43,8 +43,9 @@ class Level:
 
         unit_x, unit_y = self.get_units(width, height)
 
-        for y in range(0, self.size[1]):
-            for x in range(0, self.size[0]):
+        for x in range(0, self.size[0]):
+            for y in range(0, self.size[1]):
+                print(x,y)
                 self.get_tile(x, y).DEBUG_DrawTile(
                     surface, (x * unit_x, y * unit_y, unit_x, unit_y))
 

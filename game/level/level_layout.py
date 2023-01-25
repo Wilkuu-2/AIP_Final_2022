@@ -33,18 +33,19 @@ layout = """# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 """
 
 
 def parse_map_file():
     linked: list[tuple[int, int],] = []
     tiles: list[list[LevelTile]] = []
-    size: list[int, int] = [0, 0]
+    size: list[int, int] = [-1, -1]
     gameobjects = []
     lines = layout.replace(' ', '').splitlines(False)
 
     for y in range(len(lines)):
-        size[0] = max(len(lines), size[0])
+        size[0] = max(len(lines[y]), size[0])
         size[1] += 1
         tiles.append([])
         line = lines[y]

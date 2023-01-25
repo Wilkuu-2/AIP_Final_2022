@@ -127,13 +127,13 @@ class LevelTile:
         color = (0, 0, 0)
         match self.access:
             case ACCESS_FLAGS.ALL:
-                color = (0, 255, 0)
+                color = (20, 20, 40)
             case ACCESS_FLAGS.NONE:
-                color = (255, 0, 0)
+                color = (50, 50, 100)
             case ACCESS_FLAGS.AI:
-                color = (255, 255, 0)
+                color = (255, 255, 100)
             case ACCESS_FLAGS.PLAYER:
-                color = (0, 0, 255)
+                color = (100, 100, 255)
             case _:
                 color = (255, 255, 255)
 

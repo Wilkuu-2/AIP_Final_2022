@@ -1,7 +1,8 @@
 from .base_enemy import BaseEnemy
 from input_helpers.input_handler import InHandler
 from .level.level import Level
-from .level.tile import LevelTile
+from pygame import draw
+from pygame.surface import Surface
 from .player import Player
 
 
@@ -32,3 +33,13 @@ class GreedyEnemy(BaseEnemy):
                         self.insort(priority_queue, next_node, "score")
 
         self.move_from_path(target, start, "parent")
+
+    def display(self, screen: Surface, screen_pos: tuple, screen_size: tuple):
+        """Override of GameObject.display"""
+
+        rect = (screen_pos[0],
+                screen_pos[1],
+                screen_size[0],
+                screen_size[1])
+
+        draw.ellipse(screen, (200, 30, 30), rect)

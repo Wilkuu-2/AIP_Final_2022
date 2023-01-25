@@ -56,9 +56,9 @@ class Game:
 
         # Create Player
         player = Player((2, 2), self._input, self.level)
-        enemy1 = GreedyEnemy((16, 16), self._input, self.level, player)
-        enemy2 = RandomEnemy((17, 16), self._input, self.level, player)
-        enemy3 = AstarEnemy((15, 16), self._input, self.level, player)
+        enemy1 = GreedyEnemy((16, 17), self._input, self.level, player)
+        enemy2 = RandomEnemy((17, 17), self._input, self.level, player)
+        enemy3 = AstarEnemy((15, 17), self._input, self.level, player)
 
     def update(self, dt: float):
         """
