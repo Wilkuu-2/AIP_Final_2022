@@ -1,6 +1,7 @@
 import socket
 from controller_firmware import data
 from enum import Enum
+from PyQt5.QtWidgets import QInputDialog
 
 
 class HARDWARE_INPUTS(Enum):
@@ -11,20 +12,43 @@ class HARDWARE_INPUTS(Enum):
 class HardwareEvent():
     MOVE_TRESHOLD: float = 0.1
 
-    def __init__(self, inhandler, addr: tuple[str, int]):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect(addr)
+    def __init__(self, inhandler):
         self.data: data.ControllerData = data.ControllerData()
         self.buzzerstate = 0
         self.inhandler = inhandler
         self.last_sw1 = 0
         self.last_sw2 = 0
-
         self.shakeEvents = []
+        self.socket = None
+        
+        self.create_socket()
 
-        self.socket.settimeout(2)
+    def create_socket(self):
+        dialog_text = "Give the IP of the controller. \nPress cancel to not use the controller."
+        while True:
+            ip, ok = QInputDialog().getText(None, "Connection", dialog_text)
+            if not ok:
+                self.socket = None
+                return
+            try:
+                self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.socket.settimeout(2)
+                self.socket.connect((ip, 1420))
+                return
+            except OSError as e:
+                dialog_text = f"Error:\n{e}\n\nTry again.\nOr cancel to not use the controller."
 
     def handle(self):
+        for ev in self.shakeEvents:
+            if ev[1] < 0:
+                ev[0].invoke()
+                self.shakeEvents.remove(ev)
+                continue
+            ev[1] = ev[1] - 2
+
+        if self.socket is None:
+            return
+
         packet = data.readpacket(self.socket)
         message = packet.decode('utf-8')
 
@@ -66,7 +90,6 @@ class HardwareEvent():
                 ev[0].invoke()
                 self.shakeEvents.remove(ev)
                 continue
-
             ev[1] = ev[1] - (ax + ay + az) / 30.0
 
         self.socket.send(f"{self.buzzerstate}\n".encode("utf-8"))

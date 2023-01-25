@@ -30,8 +30,7 @@ class InHandler:
         self.events: dict[str, Union[InputEvent, TimedEvent]] = {}
         self.held_keys: list[int] = []
         self.timed_events: list[TimedEvent] = []
-        self.hardware_event = HardwareEvent(
-            self, (input("enter ip:\n").strip(), 1420))
+        self.hardware_event = HardwareEvent(self)
 
     # set_control_scheme
     #
