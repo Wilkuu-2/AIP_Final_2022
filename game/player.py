@@ -39,8 +39,7 @@ class Player(GameObject):
 
         self.handling_enemy = True
         if  random() < 0.5:
-            r = RiddleDialogue(
-                "Riddle", ["Wrong", "Right", "Wrong"], 1, self.input_handler)
+            r = RiddleDialogue(self.input_handler)
             r.run()
         else:
             s = ShakeDialogue(self.input_handler)

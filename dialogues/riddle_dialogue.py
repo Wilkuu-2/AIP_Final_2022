@@ -6,9 +6,11 @@
 #
 
 # Imports
-from random import shuffle
+from random import shuffle, choice
 from PyQt5.QtWidgets import QMessageBox, QPushButton
 from input_helpers import InHandler
+from .riddles import riddles
+
 
 from time import time
 
@@ -26,11 +28,17 @@ class RiddleDialogue():
     bottom_text   -> Additional text under the riddle
     """
 
-    def __init__(self, main_text: str, answers: list[str], corr_answer: int, input_handler: InHandler, bottom_text: str = ""):
+    def __init__(self, input_handler: InHandler, bottom_text: str = ""):
         self.input_handler = input_handler
         self.last_focus = time()
         self.focus_cooldown = 0.5
         self.ran = False
+
+        riddle = choice(riddles)
+
+        main_text = riddle[0]
+        answers = riddle[1]
+        corr_answer = riddle[2]
 
         assert len(answers) > 0
 
