@@ -8,8 +8,7 @@
 # Imports
 from random import shuffle
 from PyQt5.QtWidgets import QMessageBox, QPushButton
-from input_helpers.input_handler import InHandler
-from input_helpers.event_method import EventMethod
+from input_helpers import InHandler
 
 from time import time
 

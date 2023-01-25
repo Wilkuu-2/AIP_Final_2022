@@ -10,7 +10,7 @@
 from .game_object import GameObject
 from input_helpers.input_handler import InHandler
 from level import ACCESS_FLAGS, Level
-from dialogues import RiddleDialogue, ShakeDialogue
+from dialogues import RiddleDialogue, ShakeDialogue, EndingDialogue
 from random import random
 
 
@@ -20,7 +20,8 @@ class Player(GameObject):
     level -> see GameObject
     input_handler -> InHandler that will handle the movement and other actions
     """
-    __name__ = "Player object"
+    __name__ = "Player"
+    blocking = True
 
     def __init__(self, pos: tuple[int, int], input_handler: InHandler, level: Level):
         super().__init__(pos, (1, 1), input_handler, level, ACCESS_FLAGS.PLAYER)
@@ -54,4 +55,9 @@ class Player(GameObject):
             enemy.pos = (16, 16)
             self.handling_enemy = False
         else:
-            exit()
+            self.handle_end(False)
+
+    def handle_end(self, won):
+        e = EndingDialogue(self.input_handler, won)
+        e.run()
+        

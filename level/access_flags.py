@@ -12,10 +12,11 @@ from enum import Enum
 #
 class ACCESS_FLAGS(Enum):
     """An Enum that represents the accessibility of a tile"""
-    ALL = 0b11
-    PLAYER = 0b01
-    AI = 0b10
-    NONE = 0b00
+    ALL = 0b111
+    PLAYER = 0b010
+    AI = 0b100
+    PELLET = 0b001
+    NONE = 0b000
 
     # Overide of the "in" operator
     #

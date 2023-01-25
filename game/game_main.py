@@ -15,6 +15,7 @@ from level import Level, LevelTile
 from .greedy_enemy import GreedyEnemy
 from .random_enemy import RandomEnemy
 from .astar_enemy import AstarEnemy
+from .pellet import Pellet
 
 
 class Game:
@@ -68,6 +69,8 @@ class Game:
                         AstarEnemy(pos, self._input, self.level, player)
                     case '3':
                         RandomEnemy(pos, self._input, self.level, player)
+                    case '.':
+                        Pellet(pos, self._input, self.level)
 
 
 

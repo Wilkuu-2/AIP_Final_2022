@@ -26,7 +26,7 @@ class GameObject:
 
     __name__ = "Unnamed Game Object"
     _gameobject_id = 0
-
+    blocking = False
     def __init__(self: Self,
                  pos: tuple[int, int],
                  size: tuple[int, int],
@@ -40,7 +40,6 @@ class GameObject:
         self.input_handler = input_handler
         self.queued_movement: Union[tuple[int, int], Literal[None]] = None
         self.can_move = True
-        self.blocking = True
 
         # Attach to timed move if we have a input_handler
         if self.input_handler is not None:
