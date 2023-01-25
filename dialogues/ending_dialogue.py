@@ -1,7 +1,12 @@
+# AI&P Final project [Create M6 2022-2023]
+# dialogues/ending_dialoge.py
+#
+# Copyright 2023 Jakub Stachurski
+# Copyright 2023 Natalia Bueno Donadeu
+#
+# Imports
 from PyQt5.QtWidgets import QMessageBox, QPushButton
 from input_helpers import InHandler
-
-
 
 class EndingDialogue():
     TOP_TEXT = "This is the end!"

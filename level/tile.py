@@ -1,5 +1,5 @@
 # AI&P Final project [Create M6 2022-2023]
-# game/level/tile.py
+# level/tile.py
 #
 # Copyright 2023 Jakub Stachurski
 # Copyright 2023 Natalia Bueno Donadeu

@@ -1,3 +1,10 @@
+# AI&P Final project [Create M6 2022-2023]
+# requirements.txt
+#
+# Copyright 2022-2023 Jakub Stachurski
+# Copyright 2022-2023 Natalia Bueno Donadeu
+#
+# PIP dependencies
 pygame
 PyQt5
 typing-extensions

@@ -1,3 +1,10 @@
+# AI&P Final project [Create M6 2022-2023]
+# level/level_layout.py
+#
+# Copyright 2022-2023 Jakub Stachurski
+# Copyright 2022-2023 Natalia Bueno Donadeu
+#
+# Imports
 from level import ACCESS_FLAGS, LevelTile 
 
 layout = """# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

@@ -1,3 +1,10 @@
+# AI&P Final project [Create M6 2022-2023]
+# ui_main.py
+#
+# Copyright 2022-2023 Jakub Stachurski
+# Copyright 2022-2023 Natalia Bueno Donadeu
+#
+# Imports
 from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QMainWindow
 from PyQt5.QtGui import QPainter, QImage
 from PyQt5.QtCore import QTimer

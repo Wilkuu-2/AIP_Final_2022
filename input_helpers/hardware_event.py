@@ -1,3 +1,10 @@
+# AI&P Final project [Create M6 2022-2023]
+# input_helpers/hardware_event.py
+#
+# Copyright 2022-2023 Jakub Stachurski
+# Copyright 2022-2023 Natalia Bueno Donadeu
+#
+# Imports
 import socket
 from controller_firmware import data
 from enum import Enum

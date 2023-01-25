@@ -1,3 +1,10 @@
+# AI&P Final project [Create M6 2022-2023]
+# input_helpers/timed_event.py
+#
+# Copyright 2022-2023 Jakub Stachurski
+# Copyright 2022-2023 Natalia Bueno Donadeu
+#
+# Imports
 from .input_handler import InputEvent
 
 

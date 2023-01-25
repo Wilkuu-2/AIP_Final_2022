@@ -4,8 +4,6 @@
 # Copyright 2022-2023 Jakub Stachurski
 # Copyright 2022-2023 Natalia Bueno Donadeu
 #
-# TODO: Maybe we should split this file a bit
-
 # Imports
 from inspect import signature
 from typing import Callable

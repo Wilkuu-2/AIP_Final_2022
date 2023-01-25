@@ -1,4 +1,3 @@
-
 # AI&P Final project [Create M6 2023]
 # game/player.py
 #

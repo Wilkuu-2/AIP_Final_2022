@@ -1,3 +1,10 @@
+# AI&P Final project [Create M6 2022-2023]
+# dialogues/shake_dialogue.py
+#
+# Copyright 2023 Jakub Stachurski
+# Copyright 2023 Natalia Bueno Donadeu
+#
+# Imports
 from PyQt5.QtWidgets import QProgressDialog
 from PyQt5.QtCore import QObject, Qt
 from random import random

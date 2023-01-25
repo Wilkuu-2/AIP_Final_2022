@@ -1,3 +1,12 @@
+# AI&P Final project [Create M6 2022-2023]
+# dialogues/riddles.py
+#
+# Copyright 2023 Jakub Stachurski
+# Copyright 2023 Natalia Bueno Donadeu
+#
+ 
+# Source: ChatGPT,
+# Sponsored by Jakub's awesome regex substitution skills
 riddles = [
     ["What starts with an 'e', ends with an 'e', but only contains one letter",["Eye", "Elephant", "Envelope", "Egg"],2],
     ["I am not alive, but I grow; I don't have lungs, but I need air; I don't have a mouth, but water kills me. What am I",["Fire", "Tree", "Cloud", "Ice"],0],

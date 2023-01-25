@@ -1,3 +1,10 @@
+# AI&P Final project [Create M6 2022-2023]
+# game/greedy_enemy.py
+#
+# Copyright 2022-2023 Jakub Stachurski
+# Copyright 2022-2023 Natalia Bueno Donadeu
+#
+# Imports
 from .base_enemy import BaseEnemy
 from input_helpers.input_handler import InHandler
 from level import Level
