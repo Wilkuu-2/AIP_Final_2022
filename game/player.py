@@ -37,6 +37,8 @@ class Player(GameObject):
         if self.handling_enemy:
             return
 
+        self.beep_start([0,440,880,550])
+
         self.handling_enemy = True
         if  random() < 0.5:
             r = RiddleDialogue(self.input_handler)
@@ -50,6 +52,7 @@ class Player(GameObject):
 
     def handle_popup(self, ok, enemy):
         print(f"Popup finished: {ok}, {enemy}")
+        self.beep_start([0,680,330])
         if ok:
             enemy.pos = (16, 16)
             self.handling_enemy = False
@@ -59,4 +62,15 @@ class Player(GameObject):
     def handle_end(self, won):
         e = EndingDialogue(self.input_handler, won)
         e.run()
+
+    def beep_start(self, freqs):
+        self.input_handler.hardware_event.buzzerstate = freqs[0]
+        if len(freqs) > 1:
+            # Start a new beep when 
+            self.input_handler.attach("BUZZ_TIME",self.beep_start,freqs[1:],oneshot=True)
+        else: 
+            self.input_handler.attach("BUZZ_TIME",self.beep_end, oneshot=True)
+
+    def beep_end(self):
+        self.input_handler.hardware_event.buzzerstate = 0
         

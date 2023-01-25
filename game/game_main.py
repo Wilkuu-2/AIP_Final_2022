@@ -56,6 +56,7 @@ class Game:
 
     def populate_level(self):
         player = Player((0,0), self._input, self.level)
+        player.beep_start([600,500,700,100,200,300,400,500])
         for row in self.level.tiles:
             for tile in row:
                 tiletype = tile.get_data(hash("MAIN"),"type")

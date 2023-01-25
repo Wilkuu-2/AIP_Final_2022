@@ -20,7 +20,8 @@ def getAxis():
 other_events = {"Popup_Finish": "Popup_Finish",
                 "Popup_Start": "Popup_Start",
                 "TF-020": "Timed_Move",
-                "TF-001": "FRAME"}
+                "TF-001": "FRAME",
+                "TF-015": "BUZZ_TIME"}
 
 # TODO: Write the controller class/driver
 controller_keybinds = {"": "Test",
