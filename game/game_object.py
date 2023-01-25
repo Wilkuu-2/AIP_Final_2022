@@ -17,30 +17,6 @@ from typing import Union
 
 
 
-
-"""    def greedy_algorithm(items, max_weight):
-        # sort the items by value
-        items = sorted(items, key=lambda x: x[1], reverse=True)
-        total_value = 0
-        total_weight = 0
-        selected_items = []
-        # iterate through the items
-        for item in items:
-            if total_weight + item[0] <= max_weight:
-                selected_items.append(item)
-                total_weight += item[0]
-                total_value += item[1]
-        return (total_value, total_weight, selected_items)
-
-    class MyObject:
-        def __init__(self, data):
-            self.data = data
-
-        def greedy_algorithm(self):
-            options = [1, 2, 3]
-            choice = random.choice(options)
-            # Use the randomly chosen option in the rest of the algorithm"""
-
 class GameObject:
     """An entity base class for all moving or interactive objects
 
@@ -65,6 +41,7 @@ class GameObject:
         self.input_handler = input_handler
         self.queued_movement: Union[tuple[int, int], Literal[None]] = None
         self.can_move = True
+        self.blocking = True
 
         # Attach to timed move if we have a input_handler
         if self.input_handler is not None:
@@ -177,10 +154,16 @@ class GameObject:
             return True
 
         abs_x, abs_y = next_tile.position
+        others = self.level.get_GameObjects(abs_x, abs_y)
 
-        for other in self.level.get_GameObjects(abs_x, abs_y):
+        blocked = False
+        for other in others:
             self.on_collide(other)
             other.on_collide(self)
+            blocked = blocked or other.blocking
+
+        if blocked:
+            return True
 
         return next_tile
 

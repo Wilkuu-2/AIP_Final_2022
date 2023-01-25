@@ -27,28 +27,34 @@ class BaseEnemy(GameObject):
 
     def on_collide(self: GameObject, other: GameObject):
         if other is self.player:
-            print("Collided with player")
+            self.player.handle_enemy(self)
+
+    def _AI_step(self):
+        if self.can_move():
+            self.AI_step()
 
     def AI_step(self):
-        """The method to override and implement AI into.
+        """The method to override and implemt AI into.
         Use move((x,y)) to move in here
         """
         priority_queue = []         # add the starting node to the priority queue
         visited = []            # create an empty list of visited nodes
 
-
     def manhattan_distance(self, tile):
-        """Return the manhattan distance between the player and the 
+        """Return the manhattan distance between the player and the
         """
 
         player_x, player_y = self.player.pos
         ai_x, ai_y = tile.position
-        return abs(ai_x - player_x) + abs(ai_y - player_y)
+        dx = abs(ai_x - player_x)
+        dy = abs(ai_y - player_y)
+
+        return dx + dy
 
     def __hash__(self):
-        """Returns the ID as the hash for the tile storage 
+        """Returns the ID as the hash for the tile storage
         """
-        return self.ID
+        return hash(f"AI_OBJECT_{self.ID}")
 
     def set_data(self, tile: LevelTile, key: str, data: Any):
         """Sets data at the given tile, owned by this BaseEnemy instance
@@ -60,20 +66,10 @@ class BaseEnemy(GameObject):
         """
         return tile.get_data(hash(self), key)
 
-    def set_data_here(self, key: str, data: Any):
-        """Sets data at the current tile, owned by this BaseEnemy instance
-        """
-        self.get_level_tile.set_data(hash(self), key, data)
-
-    def get_data_here(self, key: str):
-        """Gets data at the current tile, owned by this BaseEnemy instance
-        """
-        self.get_level_tile().get_data(hash(self), key)
-
     def insort(self, arr: list, val, key: str):
         arr.insert(self.bisect(key, arr, val), val)
 
-    def bisect(self, key:str, arr: list, value, low=0, high=None):
+    def bisect(self, key: str, arr: list, value, low=0, high=None):
         if high is None:
             high = len(arr)
 
@@ -86,17 +82,22 @@ class BaseEnemy(GameObject):
 
         return low
 
-    def travel_back(self, start, target ,key):
+    def travel_back(self, start, target, key):
         nodes = [start]
         while nodes[-1] != target:
             parent = self.get_data(nodes[-1], key)
             if parent == nodes[-1]:
-                print("self own")
                 break
 
             nodes.append(parent)
 
         return nodes
 
-
-
+    def move_from_path(self, target, start, key: str):
+        nodes = self.travel_back(target, start, key)
+        next_node = nodes[-min(2, len(nodes))]
+        dist = (next_node.position[0] - start.position[0],
+                next_node.position[1] - start.position[1])
+        if abs(dist[0]) > 2:
+            dist = (-dist[0]/dist[0], dist[1])
+        self.move(dist)

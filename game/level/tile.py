@@ -34,7 +34,7 @@ class LevelTile:
                 yield neigh
 
         if self.linked is not None:
-            self.linked
+            yield self.linked
 
     def get_adjecent(self: Self):
         """Gets all adjecent tiles"""
@@ -60,10 +60,16 @@ class LevelTile:
             return self.get_relative_tile(x, y)
         except IndexError:
             if self.linked is not None:
+                print("linked")
                 return self.linked
 
     def testAccess(self: Self, access: ACCESS_FLAGS) -> bool:
         """Tests if the a object with certain access flags can access this tile"""
+        objs = self.level.get_GameObjects(*self.position)
+
+        if len(objs) > 0:
+            access = access.value ^ objs[-1].access_flags.value
+
         return access in self.access
 
     def try_move(self: Self, x: int, y: int, access: ACCESS_FLAGS) -> Union[Self, Literal[None]]:
@@ -110,7 +116,8 @@ class LevelTile:
         self.storage[ai_hash][key] = data
 
     def get_data(self, ai_hash: hash, key: str):
-        return self.storage[ai_hash][key]
+        ai_store = self.storage[ai_hash]
+        return ai_store[key]
 
     def DEBUG_DrawTile(self: Self, surface: Surface, rect: tuple[int, int, int, int]):
         """

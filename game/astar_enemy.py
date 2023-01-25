@@ -4,6 +4,7 @@ from .level.level import Level
 from .level.tile import LevelTile
 from .player import Player
 
+
 class AstarEnemy(BaseEnemy):
     def __init__(self, pos: tuple[int, int], input_handler: InHandler, level: Level, player: Player):
         super().__init__(pos, input_handler, level, player)
@@ -17,7 +18,7 @@ class AstarEnemy(BaseEnemy):
 
         self.set_data(start, "distance", 0)
 
-        while len(priority_queue ) > 0:
+        while len(priority_queue) > 0:
             current_node = priority_queue.pop(0)
             if current_node is target:
                 break
@@ -37,16 +38,8 @@ class AstarEnemy(BaseEnemy):
                         elif gscore < self.get_data(next_node, "distance"):
                             self.set_data(next_node, "parent", current_node)
                             self.set_data(next_node, "distance", gscore)
-                            self.set_data(next_node, "score", gscore+ hscore)
+                            self.set_data(next_node, "score", gscore + hscore)
                             priority_queue.remove(next_node)
-                            self.insort(priority_queue, next_node)
+                            self.insort(priority_queue, next_node, "score")
 
-        nodes = self.travel_back(target, start, "parent")
-
-        next_node = nodes[-min(2,len(nodes))]
-
-        dist = (next_node.position[0] - start.position[0]  , next_node.position[1] - start.position[1])
-        print(dist)
-        print(start)
-        print(next_node)
-        self.move(dist)
+        self.move_from_path(target, start, "parent")

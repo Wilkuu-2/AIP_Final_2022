@@ -4,10 +4,10 @@ from .level.level import Level
 from .level.tile import LevelTile
 from .player import Player
 
+
 class GreedyEnemy(BaseEnemy):
     def __init__(self, pos: tuple[int, int], input_handler: InHandler, level: Level, player: Player):
         super().__init__(pos, input_handler, level, player)
-
 
     def AI_step(self):
         start = self.get_level_tile()
@@ -16,7 +16,7 @@ class GreedyEnemy(BaseEnemy):
         priority_queue = [start]
         visited = []
 
-        while len(priority_queue ) > 0:
+        while len(priority_queue) > 0:
             current_node = priority_queue.pop(0)
             if current_node is target:
                 break
@@ -31,17 +31,4 @@ class GreedyEnemy(BaseEnemy):
                         self.set_data(next_node, "score", gscore)
                         self.insort(priority_queue, next_node, "score")
 
-
-        nodes = self.travel_back(target, start, "parent")
-
-        next_node = nodes[-min(2,len(nodes))]
-
-        dist = (next_node.position[0] - start.position[0]  , next_node.position[1] - start.position[1])
-        print(dist)
-        print(start)
-        print(next_node)
-        self.move(dist)
-
-
-
-
+        self.move_from_path(target, start, "parent")

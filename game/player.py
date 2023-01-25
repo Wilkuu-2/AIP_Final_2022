@@ -11,6 +11,7 @@ from .game_object import GameObject
 from input_helpers.input_handler import InHandler
 from .level.access_flags import ACCESS_FLAGS
 from .level.level import Level
+from UI.riddle_dialogue import RiddleDialogue
 
 
 class Player(GameObject):
@@ -29,4 +30,15 @@ class Player(GameObject):
         input_handler.attach("LEFT", self.timed_move, (-1, 0))
         input_handler.attach("RIGHT", self.timed_move, (1, 0))
 
+    def handle_enemy(self, enemy):
+        r = RiddleDialogue(
+            "Riddle", ["Wrong", "Right", "Wrong"], 2, self.input_handler)
+        r.run()
 
+        self.input_handler.attach("Popup_Finish", self.handle_enemy, enemy)
+
+    def handle_popup(self, ok, enemy):
+        if ok:
+            enemy.pos = (16, 16)
+        else:
+            exit()
