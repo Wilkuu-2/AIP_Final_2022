@@ -33,7 +33,7 @@ class HardwareEvent():
             try:
                 self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.socket.settimeout(2)
-                self.socket.connect((ip, 1420))
+                self.socket.connect((ip, 420))
                 return
             except OSError as e:
                 dialog_text = f"Error:\n{e}\n\nTry again.\nOr cancel to not use the controller."
