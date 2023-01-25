@@ -11,6 +11,9 @@ __pycache__/
 # MP6500
 */mpu6500.py
 
+# Old level data
+game/PackmanProject
+
 # Distribution / packaging
 .Python
 build/

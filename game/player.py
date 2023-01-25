@@ -12,6 +12,8 @@ from input_helpers.input_handler import InHandler
 from .level.access_flags import ACCESS_FLAGS
 from .level.level import Level
 from UI.riddle_dialogue import RiddleDialogue
+from UI.shake_dialogue import ShakeDialogue
+from random import random
 
 
 class Player(GameObject):
@@ -31,19 +33,22 @@ class Player(GameObject):
         input_handler.attach("DOWN", self.timed_move, (0, 1))
         input_handler.attach("LEFT", self.timed_move, (-1, 0))
         input_handler.attach("RIGHT", self.timed_move, (1, 0))
-        
 
     def handle_enemy(self, enemy):
         if self.handling_enemy:
             return
-        print("Caught, start popup")
 
         self.handling_enemy = True
-        r = RiddleDialogue(
-            "Riddle", ["Wrong", "Right", "Wrong"], 1, self.input_handler)
-        r.run()
-        
-        self.input_handler.attach("Popup_Finish", self.handle_popup, enemy, oneshot=True)
+        if False and random() < 0.5:
+            r = RiddleDialogue(
+                "Riddle", ["Wrong", "Right", "Wrong"], 1, self.input_handler)
+            r.run()
+        else:
+            s = ShakeDialogue(self.input_handler)
+            s.run()
+
+        self.input_handler.attach(
+            "Popup_Finish", self.handle_popup, enemy, oneshot=True)
 
     def handle_popup(self, ok, enemy):
         print(f"Popup finished: {ok}, {enemy}")

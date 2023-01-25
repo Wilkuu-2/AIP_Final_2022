@@ -149,3 +149,6 @@ class InHandler:
 
     def detach(self, name: str, method: EventMethod):
         self.find_Event_by_name(name).removeMethod(method)
+
+    def get_shake(self):
+        return self.hardware_event.shake

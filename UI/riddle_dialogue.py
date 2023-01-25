@@ -75,8 +75,9 @@ class RiddleDialogue():
         self.ran = True
 
         self.input_handler.handle_event("Popup_Start")
-        self.evs = []
+        self.input_handler.handle_event("ReleaseHeld")
 
+        self.evs = []
         self.evs.append(self.input_handler.attach(
             "LEFT", self.handle_focus, False))
         self.evs.append(self.input_handler.attach(

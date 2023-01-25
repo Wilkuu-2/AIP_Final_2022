@@ -20,6 +20,7 @@ class HardwareEvent():
         self.last_sw2 = 0
         self.shakeEvents = []
         self.socket = None
+        self.shake = 10
         
         self.create_socket()
 
@@ -44,7 +45,7 @@ class HardwareEvent():
                 ev[0].invoke()
                 self.shakeEvents.remove(ev)
                 continue
-            ev[1] = ev[1] - 2
+            ev[1] = ev[1] - self.shake
 
         if self.socket is None:
             return
@@ -84,13 +85,14 @@ class HardwareEvent():
 
         self.last_sw1 = sw1
         self.last_sw2 = sw2
+        self.shake = (abs(ax) + abs(ay) + abs(az)) / 60.0
 
         for ev in self.shakeEvents:
             if ev[1] < 0:
                 ev[0].invoke()
                 self.shakeEvents.remove(ev)
                 continue
-            ev[1] = ev[1] - (ax + ay + az) / 30.0
+            ev[1] = ev[1] - self.shake
 
         self.socket.send(f"{self.buzzerstate}\n".encode("utf-8"))
 
