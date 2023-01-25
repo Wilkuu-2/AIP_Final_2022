@@ -14,7 +14,6 @@ from input_helpers.event_method import EventMethod
 from game.player import Player
 from UI.riddle_dialogue import RiddleDialogue
 from game.level.level import Level
-from game.PacmanProject.board import boards, linked
 from .greedy_enemy import GreedyEnemy
 from .random_enemy import RandomEnemy
 from .astar_enemy import AstarEnemy
@@ -51,8 +50,7 @@ class Game:
         self.time = pygame.time.get_ticks()
 
         # Create Level
-        size = (len(boards[0]), len(boards))
-        self.level = Level(size, boards, linked)
+        self.level = Level()
 
         self._input.attach("Timed_Move", self.level.clear_tile_storage)
 

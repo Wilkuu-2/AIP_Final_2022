@@ -19,10 +19,10 @@ class LevelTile:
     access   -> the access_flags of the tile
     """
 
-    def __init__(self: Self, position: tuple[int, int], level, access: ACCESS_FLAGS):
+    def __init__(self: Self, position: tuple[int, int], access: ACCESS_FLAGS):
         self.position = position
         self.linked = None
-        self.level = level
+        self.level = None
         self.access = access
         # The AI Can store stuff here
         self.storage: dict[hash, dict[str, Any]] = {}

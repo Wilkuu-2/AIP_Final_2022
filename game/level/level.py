@@ -6,10 +6,9 @@
 #
 # Imports
 from .tile import LevelTile
+from .level_layout import parse_map_file
 from pygame.surface import Surface
-from .access_flags import ACCESS_FLAGS
-from typing_extensions import Self, Any
-
+from typing_extensions import Self
 
 
 class Level:
@@ -22,27 +21,15 @@ class Level:
                   TODO: Find a way to get those parsed in the arr
     """
 
-    def __init__(self: Self, size: tuple[int, int], levelarr: list[list[int]], linked: tuple[tuple, tuple]):
-        self.size = size
-        self.tiles: list[list[LevelTile]] = []
-        self.game_objects: list[Any] = []
+    def __init__(self):
+        self.size, self.tiles, linked, self.game_objects = parse_map_file()
+
+        print(self.size)
+        for tile_line in self.tiles:
+            for tile in tile_line:
+                tile.level = self
 
         # Read through the level array and construct the tiles in the tiles list
-        for x in range(0, size[0]):
-            self.tiles.append([])
-            for y in range(0, size[1]):
-                val = levelarr[y][x]
-
-                # Gives the tile a access flag which will determine if things can enter that tile or not
-                access = ACCESS_FLAGS.NONE
-
-                if val in [0, 1, 2]:    # 0, 1, 2: Passible tiles with or without the dots
-                    access = ACCESS_FLAGS.ALL
-                elif val == 9:          # 9: Gate of the enemy base
-                    access = ACCESS_FLAGS.AI
-
-                # Construct the tile
-                self.tiles[x].append(LevelTile((x, y), self, access))
 
         # Link the two looping spots together
         link1 = self.get_tile(*linked[0])
@@ -56,8 +43,8 @@ class Level:
 
         unit_x, unit_y = self.get_units(width, height)
 
-        for x in range(0, self.size[0]):
-            for y in range(0, self.size[1]):
+        for y in range(0, self.size[1]):
+            for x in range(0, self.size[0]):
                 self.get_tile(x, y).DEBUG_DrawTile(
                     surface, (x * unit_x, y * unit_y, unit_x, unit_y))
 
@@ -132,7 +119,7 @@ class Level:
     def get_tile(self: Self, x: int, y: int) -> LevelTile:
         """Returns the tile at a given position"""
         self.validate_tile_position(x, y)
-        return self.tiles[round(x)][round(y)]
+        return self.tiles[round(y)][round(x)]
 
     def clear_tile_storage(self):
         """Clears the storage for the AI"""

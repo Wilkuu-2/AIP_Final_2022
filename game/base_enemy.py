@@ -85,7 +85,10 @@ class BaseEnemy(GameObject):
     def travel_back(self, start, target, key):
         nodes = [start]
         while nodes[-1] != target:
-            parent = self.get_data(nodes[-1], key)
+            try:
+                parent = self.get_data(nodes[-1], key)
+            except KeyError:
+                return None
             if parent == nodes[-1]:
                 break
 
@@ -95,9 +98,13 @@ class BaseEnemy(GameObject):
 
     def move_from_path(self, target, start, key: str):
         nodes = self.travel_back(target, start, key)
+        if nodes is None:
+            return
+
         next_node = nodes[-min(2, len(nodes))]
         dist = (next_node.position[0] - start.position[0],
                 next_node.position[1] - start.position[1])
         if abs(dist[0]) > 2:
             dist = (-dist[0]/dist[0], dist[1])
+
         self.move(dist)
