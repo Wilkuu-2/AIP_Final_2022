@@ -1,8 +1,14 @@
-
+# AI&P Final project [Create M6 2022-2023]
+# controller_firmware/data.py
+#
+# Copyright 2022-2023 Jakub Stachurski
+# Copyright 2022-2023 Natalia Bueno Donadeu
+#
+# Imports
 MAX_IN_PACKET = 1024 # Maximum packet size of 1kb
 MESSAGE_LEN = 8*13 + 2*2
 
-def write_float(_in: float) -> float:
+def write_float(_in: float) -> str:
     return "{:012.5f}=".format(_in)
 
 def write_bool_int(_in: int) -> str:

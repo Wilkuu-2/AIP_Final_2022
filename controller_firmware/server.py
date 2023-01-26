@@ -1,7 +1,12 @@
-from machine import Pin, idle
+# AI&P Final project [Create M6 2022-2023]
+# controller_hardware/server.py
+#
+# Copyright 2022-2023 Jakub Stachurski
+# Copyright 2022-2023 Natalia Bueno Donadeu
+#
+# Imports
 from network import WLAN, STA_IF
 import socket
-import uasyncio
 from micropython import const
 from time import sleep_ms
 

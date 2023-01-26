@@ -1,3 +1,10 @@
+# AI&P Final project [Create M6 2022-2023]
+# controller_firmware/hardware.py
+#
+# Copyright 2022-2023 Jakub Stachurski
+# Copyright 2022-2023 Natalia Bueno Donadeu
+#
+# Imports
 from machine import Pin, I2C, ADC, PWM
 from time import sleep_ms
 from data import ControllerData
