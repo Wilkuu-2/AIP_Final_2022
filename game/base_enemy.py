@@ -6,7 +6,7 @@
 #
 # Imports
 from .game_object import GameObject
-from input_helpers.input_handler import InHandler
+from input_helpers import InHandler
 from level import LevelTile
 from common import ACCESS_FLAGS
 from .player import Player

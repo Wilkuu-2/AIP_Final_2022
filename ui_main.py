@@ -12,7 +12,7 @@ from PyQt5.QtCore import QTimer
 from sys import argv
 from game.game_main import Game
 
-from input_helpers.input_handler import InHandler
+from input_helpers import InHandler
 
 
 class UI(QMainWindow):

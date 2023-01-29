@@ -9,7 +9,7 @@
 # Imports
 from pygame import draw, Rect
 from pygame.surface import Surface
-from input_helpers.input_handler import InHandler
+from input_helpers import InHandler
 from common import ACCESS_FLAGS
 from typing_extensions import Self, Literal
 from level import LevelTile

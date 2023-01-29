@@ -6,7 +6,7 @@
 #
 # Imports
 from .base_enemy import BaseEnemy
-from input_helpers.input_handler import InHandler
+from input_helpers import InHandler
 from level import LevelTile
 from pygame import draw
 from pygame.surface import Surface

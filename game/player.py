@@ -7,7 +7,7 @@
 
 # Imports
 from .game_object import GameObject
-from input_helpers.input_handler import InHandler
+from input_helpers import InHandler
 from common import ACCESS_FLAGS
 from dialogues import RiddleDialogue, ShakeDialogue, EndingDialogue
 from random import random
