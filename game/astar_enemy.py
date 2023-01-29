@@ -7,14 +7,14 @@
 # Imports
 from .base_enemy import BaseEnemy
 from input_helpers.input_handler import InHandler
-from level import Level, LevelTile
+from level import LevelTile
 from .player import Player
 import pygame
 
 
 class AstarEnemy(BaseEnemy):
-    def __init__(self, pos: tuple[int, int], input_handler: InHandler, level: Level, player: Player):
-        super().__init__(pos, input_handler, level, player)
+    def __init__(self, tile: LevelTile, input_handler: InHandler, player: Player):
+        super().__init__(tile, input_handler, player)
 
     def AI_step(self):
         start = self.get_level_tile()

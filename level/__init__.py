@@ -4,6 +4,5 @@
 # Copyright 2022-2023 Natalia Bueno Donadeu
 #
 # Module: 
-from level.access_flags import ACCESS_FLAGS
-from level.tile import LevelTile 
+from level.tile import LevelTile
 from level.level import Level

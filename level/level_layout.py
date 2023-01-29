@@ -5,7 +5,8 @@
 # Copyright 2022-2023 Natalia Bueno Donadeu
 #
 # Imports
-from level import ACCESS_FLAGS, LevelTile 
+from level import LevelTile   
+from common import ACCESS_FLAGS
 
 layout = """# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # O # # # #
@@ -47,7 +48,6 @@ def parse_map_file():
     linked: list[tuple[int, int],] = []
     tiles: list[list[LevelTile]] = []
     size: list[int] = [-1, -1]
-    gameobjects = []
     lines = layout.replace(' ', '').splitlines(False)
 
     for y in range(len(lines)):
@@ -76,5 +76,5 @@ def parse_map_file():
             # Store the type
             tiles[y][x].set_data(hash("MAIN"),"type",line[x])
 
-    return size, tiles, linked, gameobjects
+    return size, tiles, linked
 

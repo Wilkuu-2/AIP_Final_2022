@@ -8,9 +8,10 @@
 # Imports
 from .game_object import GameObject
 from input_helpers.input_handler import InHandler
-from level import ACCESS_FLAGS, Level
+from common import ACCESS_FLAGS
 from dialogues import RiddleDialogue, ShakeDialogue, EndingDialogue
 from random import random
+from level import Level
 
 
 class Player(GameObject):
@@ -22,8 +23,9 @@ class Player(GameObject):
     __name__ = "Player"
     blocking = True
 
-    def __init__(self, pos: tuple[int, int], input_handler: InHandler, level: Level):
-        super().__init__(pos, (1, 1), input_handler, level, ACCESS_FLAGS.PLAYER)
+    def __init__(self, pos, input_handler: InHandler, level: Level):
+        super().__init__(level.get_tile(*pos), (1, 1), input_handler, ACCESS_FLAGS.PLAYER)
+        self.level = level
 
         self.handling_enemy = False
 
@@ -53,7 +55,7 @@ class Player(GameObject):
         print(f"Popup finished: {ok}, {enemy}")
         self.beep_start([0,680,330])
         if ok:
-            enemy.pos = (16, 16)
+            enemy.tile = self.level.get_tile(16,16)
             self.handling_enemy = False
         else:
             self.handle_end(False)

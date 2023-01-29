@@ -21,7 +21,7 @@ other_events = {"Popup_Finish": "Popup_Finish",
                 "Popup_Start": "Popup_Start",
                 "TF-020": "Timed_Move",
                 "TF-001": "FRAME",
-                "TF-015": "BUZZ_TIME"}
+                "TF-015": "BUZZ_TIME"} # typing: none
 
 # TODO: Write the controller class/driver
 controller_keybinds = {"": "Test",
@@ -34,12 +34,13 @@ controller_keybinds = {"": "Test",
 
 
 # Key bindings for the keyboard using QT bindings
-keyboard_keybinds = {f"{Qt.Key_Q}_KeyHold": "Test",
-                     f"{Qt.Key_W}_KeyHold": "UP",
-                     f"{Qt.Key_A}_KeyHold": "LEFT",
-                     f"{Qt.Key_S}_KeyHold": "DOWN",
-                     f"{Qt.Key_D}_KeyHold": "RIGHT",
-                     }
+# type: ignore
+keyboard_keybinds = {f"{Qt.Key_Q}_KeyHold": "Test", # type: ignore 
+                     f"{Qt.Key_W}_KeyHold": "UP", # type: ignore 
+                     f"{Qt.Key_A}_KeyHold": "LEFT", # type: ignore 
+                     f"{Qt.Key_S}_KeyHold": "DOWN", # type: ignore 
+                     f"{Qt.Key_D}_KeyHold": "RIGHT", # type: ignore 
+                     } 
 
 # Combined keybinds
 game_keybinds = controller_keybinds | keyboard_keybinds | other_events

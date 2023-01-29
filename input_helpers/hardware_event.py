@@ -34,7 +34,7 @@ class HardwareEvent():
     def create_socket(self):
         dialog_text = "Give the IP of the controller. \nPress cancel to not use the controller."
         while True:
-            ip, ok = QInputDialog().getText(None, "Connection", dialog_text)
+            ip, ok = QInputDialog.getText(None, "Connection", dialog_text) # type: ignore
             if not ok:
                 self.socket = None
                 return

@@ -39,7 +39,6 @@ class EndingDialogue():
 
         self.input_handler.handle_event("Popup_Start")
         self.input_handler.handle_event("ReleaseHeld")
-
         self.input_handler.attach("CLICK", self.handle_button, None)
 
         self.message_box.show()

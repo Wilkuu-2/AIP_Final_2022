@@ -5,10 +5,10 @@
 # Copyright 2022-2023 Natalia Bueno Donadeu
 #
 # Imports
-from level import Level
-from game import GameObject
+from game.game_object import GameObject
 from input_helpers import InHandler
-from level import Level, ACCESS_FLAGS
+from level import LevelTile
+from common import ACCESS_FLAGS
 from pygame.surface import Surface
 from pygame import draw
 
@@ -17,10 +17,9 @@ class Pellet(GameObject):
     PELLET_AMOUNT = 0
     PELLET_RADIUS = 0.1
     def __init__(self, 
-                 pos: tuple[int, int],
-                 input_handler: InHandler,
-                 level: Level):
-        super().__init__(pos, (1,1), input_handler, level, ACCESS_FLAGS.PELLET)
+                 tile: LevelTile,
+                 input_handler: InHandler):
+        super().__init__(tile, (1,1), input_handler, ACCESS_FLAGS.PELLET)
         Pellet.PELLET_AMOUNT += 1
 
     def display(self, screen: Surface, screen_pos: tuple, screen_size: tuple):
@@ -33,7 +32,7 @@ class Pellet(GameObject):
     
     def on_collide(self, other: GameObject):
         if other.__name__ == "Player":
-            self.level.deregister_GameObject(self)
+            GameObject.GAME_OBJECTS.remove(self)
             Pellet.PELLET_AMOUNT -= 1
             if Pellet.PELLET_AMOUNT == 0:
                 other.handle_end(True) # type: ignore

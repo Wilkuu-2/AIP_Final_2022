@@ -7,15 +7,15 @@
 # Imports
 from .base_enemy import BaseEnemy
 from input_helpers.input_handler import InHandler
-from level import Level
+from level import LevelTile
 from pygame import draw
 from pygame.surface import Surface
 from .player import Player
 
 
 class GreedyEnemy(BaseEnemy):
-    def __init__(self, pos: tuple[int, int], input_handler: InHandler, level: Level, player: Player):
-        super().__init__(pos, input_handler, level, player)
+    def __init__(self, tile: LevelTile, input_handler: InHandler, player: Player):
+        super().__init__(tile, input_handler, player)
 
     def AI_step(self):
         start = self.get_level_tile()

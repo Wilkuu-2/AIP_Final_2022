@@ -11,7 +11,8 @@ import pygame
 from input_helpers import controls
 from input_helpers import InHandler
 from game.player import Player
-from level import Level, LevelTile
+from game.game_object import GameObject
+from level import level 
 from .greedy_enemy import GreedyEnemy
 from .random_enemy import RandomEnemy
 from .astar_enemy import AstarEnemy
@@ -49,29 +50,29 @@ class Game:
         self.time = pygame.time.get_ticks()
 
         # Create Level
-        self.level = Level()
+        self.level = level.Level()
         self._input.attach("Timed_Move", self.level.clear_tile_storage)
         # Create Player and other entities
         self.populate_level()
 
     def populate_level(self):
         player = Player((0,0), self._input, self.level)
+        # Register inside of the level
         player.beep_start([600,500,700,100,200,300,400,500])
         for row in self.level.tiles:
             for tile in row:
                 tiletype = tile.get_data(hash("MAIN"),"type")
-                pos = tile.position
                 match tiletype:
                     case 'P':
-                        player.pos = pos
+                        player.tile = tile
                     case '1':
-                        GreedyEnemy(pos, self._input, self.level, player)
+                        GreedyEnemy(tile, self._input, player)
                     case '2':
-                        AstarEnemy(pos, self._input, self.level, player)
+                        AstarEnemy(tile, self._input, player)
                     case '3':
-                        RandomEnemy(pos, self._input, self.level, player)
+                        RandomEnemy(tile, self._input, player)
                     case '.':
-                        Pellet(pos, self._input, self.level)
+                        Pellet(tile, self._input)
 
 
 
@@ -114,7 +115,7 @@ class Game:
         self.time = current_time
 
         # Update all the GameObjects
-        self.level.update_GameObjects(dt)
+        GameObject.update_GameObjects(dt)
 
         # Call the key events
         self._input.heldKeyUpdate()

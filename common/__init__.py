@@ -4,3 +4,5 @@
 # Copyright 2022-2023 Natalia Bueno Donadeu
 #
 # Module: 
+from common.access_flags import ACCESS_FLAGS
+

@@ -5,11 +5,10 @@
 # Copyright 2023 Natalia Bueno Donadeu
 #
 # Imports
-from level import ACCESS_FLAGS
+from common import ACCESS_FLAGS
 from pygame.surface import Surface
 from typing_extensions import Self, Any
-from typing import Union, Literal
-
+from typing import Literal
 
 class LevelTile:
     """A tile of the level
@@ -21,7 +20,7 @@ class LevelTile:
 
     def __init__(self: Self, position: tuple[int, int], access: ACCESS_FLAGS):
         self.position = position
-        self.linked: Union[Self,Literal[None]] = None
+        self.linked: Self | Literal[None] = None
         self.level: Any = None
         self.access = access
         # The AI Can store stuff here
@@ -54,7 +53,7 @@ class LevelTile:
         other.linked = self
         self.get_relative_tile
 
-    def move_relative(self: Self, x: int, y: int) -> Union[Self, Literal[None]]:
+    def move_relative(self: Self, x: int, y: int) -> Self | Literal[None]:
         """Get a relative tile if it exists, otherwise moving to the linked tile if it exists"""
         try:
             return self.get_relative_tile(x, y)
@@ -72,7 +71,7 @@ class LevelTile:
 
         return access in self.access
 
-    def try_move(self: Self, x: int, y: int, access: ACCESS_FLAGS) -> Union[Self, Literal[None]]:
+    def try_move(self: Self, x: int, y: int, access: ACCESS_FLAGS) -> Self | Literal[None]:
         """Simulates a GameObject trying to move to a relative location
         with certain access flags.
 
@@ -89,7 +88,7 @@ class LevelTile:
 
         new_x = x
         new_y = y
-        new_tile: Union[LevelTile, Literal[None]] = None
+        new_tile: Self | Literal[None] = None
 
         # Get the next tile in the path
         if xstep != 0:  # xstep
@@ -115,7 +114,7 @@ class LevelTile:
             self.storage[ai_hash] = {}
         self.storage[ai_hash][key] = data
 
-    def get_data(self, ai_hash: int, key: str):
+    def get_data(self, ai_hash: int, key: str) -> Any:
         ai_store = self.storage[ai_hash]
         return ai_store[key]
 

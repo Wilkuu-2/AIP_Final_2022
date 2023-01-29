@@ -7,7 +7,8 @@
 # Imports
 from .game_object import GameObject
 from input_helpers.input_handler import InHandler
-from level import Level, LevelTile, ACCESS_FLAGS
+from level import LevelTile
+from common import ACCESS_FLAGS
 from .player import Player
 from typing_extensions import Any
 
@@ -20,8 +21,8 @@ class BaseEnemy(GameObject):
     """
     AI_ID = 0
 
-    def __init__(self, pos: tuple[int, int], input_handler: InHandler, level: Level, player: Player):
-        super().__init__(pos, (1, 1), input_handler,  level, ACCESS_FLAGS.AI)
+    def __init__(self, tile: LevelTile, input_handler: InHandler, player: Player):
+        super().__init__(tile, (1, 1), input_handler, ACCESS_FLAGS.AI)
         self.player = player
 
         # Create a ID for the Enemy
@@ -47,7 +48,7 @@ class BaseEnemy(GameObject):
         """Return the manhattan distance between the player and the
         """
 
-        player_x, player_y = self.player.pos
+        player_x, player_y = self.player.tile.position
         ai_x, ai_y = tile.position
         dx = abs(ai_x - player_x)
         dy = abs(ai_y - player_y)

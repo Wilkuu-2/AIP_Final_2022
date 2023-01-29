@@ -1,0 +1,8 @@
+{
+    "ignore": [
+        "./controller_firmware"
+    ],
+    "exclude": [
+        "./game/PacmanProject"
+    ]
+}

@@ -76,7 +76,7 @@ class PyGameWidget(QWidget):
             surface = self.game.get_surface()
             w = surface.get_width()
             h = surface.get_height()
-            data = surface.get_buffer().raw
+            data = surface.get_buffer().raw # type: ignore
             self.image = QImage(data, w, h, QImage.Format_RGB32)
 
         # When the image exists draw it
