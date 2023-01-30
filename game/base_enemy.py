@@ -19,27 +19,35 @@ class BaseEnemy(GameObject):
        Subclass of GameObject, see game/game_object.py
        player -> The player to chase
     """
+    __name__ = "Generic Enemy"
     AI_ID = 0
+
 
     def __init__(self, tile: LevelTile, input_handler: InHandler, player: Player):
         super().__init__(tile, (1, 1), input_handler, ACCESS_FLAGS.AI)
         self.player = player
+        self.start_tile = tile 
+        self.respawning = False
 
         # Create a ID for the Enemy
         self.ID = BaseEnemy.AI_ID
         BaseEnemy.AI_ID += 1
 
-        input_handler.attach("Timed_Move", self.AI_step)
+        input_handler.attach("Timed_Move", self._AI_step)
 
     def on_collide(self, other: GameObject):
         if other is self.player:
             self.player.handle_enemy(self)
 
     def _AI_step(self):
-        if self.can_move:
-            self.AI_step()
+        if self.respawning and self.tile is self.start_tile:
+            self.respawning = False
 
-    def AI_step(self):
+        if self.can_move:
+            target = self.start_tile if self.respawning else self.player.tile
+            self.AI_step(target)
+
+    def AI_step(self, target: LevelTile):
         """The method to override and implemt AI into.
         Use move((x,y)) to move in here
         """
@@ -69,6 +77,9 @@ class BaseEnemy(GameObject):
         """Gets data at the given tile, owned by this BaseEnemy instance
         """
         return tile.get_data(hash(self), key)
+
+    def respawn(self):
+        self.respawning = True
 
     def insort(self, arr: list, val, key: str):
         arr.insert(self.bisect(key, arr, val), val)

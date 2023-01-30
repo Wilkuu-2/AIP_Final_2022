@@ -10,22 +10,19 @@ from .game_object import GameObject
 from input_helpers import InHandler
 from common import ACCESS_FLAGS
 from dialogues import BaseDialogue, EndingDialogue
-from random import random
-from level import Level
+from level import LevelTile
 
 
 class Player(GameObject):
     """ The player entity, this is where the player logic lives
-    pos -> see GameObject
-    level -> see GameObject
+    tile -> see GameObject
     input_handler -> InHandler that will handle the movement and other actions
     """
     __name__ = "Player"
     blocking = True
 
-    def __init__(self, pos, input_handler: InHandler, level: Level):
-        super().__init__(level.get_tile(*pos), (1, 1), input_handler, ACCESS_FLAGS.PLAYER)
-        self.level = level
+    def __init__(self, tile: LevelTile, input_handler: InHandler, ):
+        super().__init__(tile, (1, 1), input_handler, ACCESS_FLAGS.PLAYER)
 
         self.handling_enemy = False
 
@@ -52,7 +49,7 @@ class Player(GameObject):
         print(f"Popup finished: {ok}, {enemy}")
         self.beep_start([0,680,330])
         if ok:
-            enemy.tile = self.level.get_tile(16,16)
+            enemy.respawn()
             self.handling_enemy = False
         else:
             self.handle_end(False)

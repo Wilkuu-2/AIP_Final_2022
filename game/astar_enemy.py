@@ -13,12 +13,12 @@ import pygame
 
 
 class AstarEnemy(BaseEnemy):
+    __name__ = "A* Enemy" 
     def __init__(self, tile: LevelTile, input_handler: InHandler, player: Player):
         super().__init__(tile, input_handler, player)
-
-    def AI_step(self):
-        start = self.get_level_tile()
-        target = self.player.get_level_tile()
+    
+    def AI_step(self, target: LevelTile):
+        start = self.tile
 
         priority_queue = [start]
         visited: list[LevelTile]= []

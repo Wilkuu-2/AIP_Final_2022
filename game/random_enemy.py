@@ -14,14 +14,15 @@ import pygame
 
 
 class RandomEnemy(BaseEnemy):
+    __name__ = "Random Enemy" 
     def __init__(self, tile: LevelTile, input_handler: InHandler, player: Player):
         super().__init__(tile, input_handler, player)
 
-    def AI_step(self):
+    def AI_step(self, target: LevelTile):
         """Override of BaseEnemy.display"""
         visited = []
         for _ in range(2):
-            start = self.get_level_tile()
+            start = self.tile
             choices = list(start.get_neighbors(self.access_flags))
             for vis in visited:
                 if vis in choices:
