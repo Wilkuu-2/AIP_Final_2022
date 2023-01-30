@@ -9,7 +9,7 @@
 from .game_object import GameObject
 from input_helpers import InHandler
 from common import ACCESS_FLAGS
-from dialogues import RiddleDialogue, ShakeDialogue, EndingDialogue
+from dialogues import BaseDialogue, EndingDialogue
 from random import random
 from level import Level
 
@@ -41,12 +41,9 @@ class Player(GameObject):
         self.beep_start([0,440,880,550])
 
         self.handling_enemy = True
-        if  random() < 0.5:
-            r = RiddleDialogue(self.input_handler)
-            r.run()
-        else:
-            s = ShakeDialogue(self.input_handler)
-            s.run()
+        dialogue = BaseDialogue.getRandomDialogue(self.input_handler)
+        dialogue.run()
+
 
         self.input_handler.attach(
             "Popup_Finish", self.handle_popup, enemy, oneshot=True)

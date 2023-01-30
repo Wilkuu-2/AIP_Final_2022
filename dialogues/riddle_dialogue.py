@@ -10,30 +10,19 @@ from random import shuffle, choice
 from PyQt5.QtWidgets import QMessageBox, QPushButton
 from input_helpers import InHandler
 from .riddles import riddles
-
+from .base_dialogue import BaseDialogue
 
 from time import time
 
 
-class RiddleDialogue():
+class RiddleDialogue(BaseDialogue):
     """This is a wrappper around the QT QMessageBox that can give a player a riddle
     The correctness of the multiple choice answer given by the player
     is reported in a event
-    Constructor
-
-    main_text -> The riddle
-    answers    -> Possible answers for the riddle
-    corr_answer -> The index of the correct answer in the answers
-    input_handler -> The input handler to send events to
-    bottom_text   -> Additional text under the riddle
     """
 
-    def __init__(self, input_handler: InHandler, bottom_text: str = ""):
-        self.input_handler = input_handler
-        self.last_focus = time()
-        self.focus_cooldown = 0.5
-        self.ran = False
-
+    def __init__(self, input_handler: InHandler):
+        super().__init__(input_handler)
         riddle = choice(riddles)
 
         main_text = riddle[0]
@@ -43,11 +32,11 @@ class RiddleDialogue():
         assert len(answers) > 0
 
         # Initalize the QMessageBox
-        self.message_box = QMessageBox()
-        self.message_box.setText(main_text)
+        self.widget = QMessageBox()
+        self.widget.setText(main_text)
 
         # Optional text under the riddle
-        self.message_box.setInformativeText(bottom_text)
+        #self.widget.setInformativeText(bottom_text)
 
         # Buttons held by the class
         self.buttons = []
@@ -69,48 +58,13 @@ class RiddleDialogue():
         # Attach the buttons to the message box in a random order
         shuffle(self.buttons)
         for button in self.buttons:
-            self.message_box.addButton(button, QMessageBox.AcceptRole)
+            self.widget.addButton(button, QMessageBox.AcceptRole)
 
         # Attach the event of clicking
-        self.message_box.buttonClicked.connect(self.handle_click)
+        self.widget.buttonClicked.connect(self.handle_click)
 
-    def run(self):
-        """Opens the dialogue"""
-        if self.ran is True:
-            return
+    def evaluate(self, button: QPushButton):
+        return button == self.corr_ans_button
+         
 
-        self.ran = True
-
-        self.input_handler.handle_event("Popup_Start")
-        self.input_handler.handle_event("ReleaseHeld")
-
-        self.evs = []
-        self.evs.append(self.input_handler.attach(
-            "LEFT", self.handle_focus, False))
-        self.evs.append(self.input_handler.attach(
-            "RIGHT", self.handle_focus, True))
-        self.evs.append(self.input_handler.attach("CLICK", self.handle_select))
-
-        self.message_box.show()
-
-    def handle_click(self, button: QPushButton):
-        """ A QT signal which handles the click of a answer"""
-
-        self.input_handler.handle_event("ReleaseHeld")
-
-        self.input_handler.handle_event(
-            "Popup_Finish", button == self.corr_ans_button)
-
-        for ev in self.evs:
-            self.input_handler.detach(*ev)
-
-    def handle_focus(self, forward: bool):
-        if self.last_focus + self.focus_cooldown < time():
-            self.message_box.focusNextPrevChild(forward)
-            self.last_focus = time()
-
-    def handle_select(self):
-        self.handle_click(self.message_box.focusWidget())
-        self.message_box.windowHandle().hide()
-
-    # TODO: Handle the user just killing the popup
+BaseDialogue.RANDOM_DIALOGUES.append(RiddleDialogue)
